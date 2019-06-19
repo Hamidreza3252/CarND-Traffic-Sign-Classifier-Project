@@ -6,3 +6,5 @@ models
 *.p
 traffic-signs-data
 saved-model
+venv
+.idea
