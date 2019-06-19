@@ -168,21 +168,28 @@ class Cnn:
             yield np.asarray(features[start:end]), np.asarray(labels[start:end])
 
     @staticmethod
-    def normalize(x, output_range_min=0.0, output_range_max=1.0, image_data_min=0.0, image_data_max=255.0):
+    def normalize(x, output_range_min=0.0, output_range_max=1.0, image_data_min=0.0, image_data_max=255.0, approach="scale"):
         """
         Normalize a list of sample image data in the range of 0 to 1
         : x: List of image data.  The image shape is (32, 32, 3)
         : return: Numpy array of normalize data
         """
 
-        # output_range_min = 0.0
-        # output_range_max = 1.0
         output_range_diff = output_range_max - output_range_min
-        # image_data_min = 0.0
-        # image_data_max = 255
-        image_data_range_diff = image_data_max - image_data_min
 
-        normalized_image_data = output_range_min + (x - image_data_min) * output_range_diff / image_data_range_diff
+        if(approach == "scale"):
+            image_data_range_diff = image_data_max - image_data_min
+            offset = 0
+        elif(approach == "offset-scale"):
+            image_data_range_diff = (image_data_max - image_data_min) // 2
+            offset = (image_data_max + image_data_min) // 2
+        else:
+            raise Exception("Approach is wrong or missing")
+
+        # print("image_data_range_diff", image_data_range_diff)
+        # print("offset", offset)
+
+        normalized_image_data = output_range_min + (x - image_data_min - offset) * output_range_diff / image_data_range_diff
 
         return normalized_image_data
 
@@ -192,6 +199,7 @@ class Cnn:
         : x: List of sample Labels
         : return: Numpy array of one-hot encoded labels
         """
+
         return self.lb.transform(x)
 
     @staticmethod
@@ -238,7 +246,8 @@ class Cnn:
         return keep_prob
 
     @staticmethod
-    def conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ksize, pool_strides, wieghts_name="", layer_name=""):
+    def conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ksize, pool_strides, wieghts_name="", layer_name="",
+                       batch_normalizer=None):
         """
         Apply convolution then max pooling to x_tensor
         :param x_tensor: TensorFlow Tensor
@@ -279,8 +288,16 @@ class Cnn:
 
         conv_layer = tf.nn.conv2d(x_tensor, weights, conv_strides, "SAME")
         conv_layer = tf.nn.bias_add(conv_layer, biases, name=layer_name)
-        conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding="SAME")
+
+        if(batch_normalizer):
+            print("batch_normalizer:", batch_normalizer)
+
+            conv_layer = batch_normalizer(conv_layer)
+
         conv_layer = tf.nn.relu(conv_layer)
+        # conv_layer = tf.nn.tanh(conv_layer)
+        # conv_layer = tf.nn.leaky_relu(conv_layer)
+        conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding="SAME")
 
         # H1: conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding='SAME')
 
@@ -455,12 +472,11 @@ class Cnn:
         """
         raise NotImplementedError("deprecated method")
 
-    @staticmethod
-    def display_image_predictions(features, labels, predictions, n_classes):
-        label_names = CnnModules._load_label_names()
-        label_binarizer = LabelBinarizer()
-        label_binarizer.fit(range(n_classes))
-        label_ids = label_binarizer.inverse_transform(np.array(labels))
+    def display_image_predictions(self, features, encoded_label_ids, predicted_label_ids):
+
+        # self.label_names = {}
+
+        label_ids = self.lb.inverse_transform(np.asanyarray(encoded_label_ids))
 
         fig, axies = plt.subplots(nrows=len(features), ncols=2)
         fig.set_figheight(12)
@@ -468,24 +484,29 @@ class Cnn:
         fig.tight_layout()
         fig.suptitle("Softmax Predictions", fontsize=20, y=1.1)
 
-        n_predictions = n_classes
+        n_classes = len(self.label_names)
         margin = 0.05
-        ind = np.arange(n_predictions)
-        width = (1. - 2. * margin) / n_predictions
+        ind = np.arange(n_classes)
+        width = (1. - 2. * margin) / n_classes
 
-        for image_i, (feature, label_id, pred_indicies, pred_values) in enumerate(zip(features, label_ids, predictions.indices, predictions.values)):
-            pred_names = [label_names[pred_i] for pred_i in pred_indicies]
-            correct_name = label_names[label_id]
+        for image_i, (feature, label_id, pred_indicies, pred_values) in enumerate(zip(features, label_ids, predicted_label_ids.indices, predicted_label_ids.values)):
+            pred_label_names = [self.label_names[pred_i] for pred_i in pred_indicies]
+            pred_label_name = pred_label_names[np.argmax(pred_values)]
+
+            label_name = self.label_names[label_id]
 
             # rectified_feature = (feature * 255.0).astype(int)
 
-            axies[image_i][0].imshow((feature * 255).astype(np.uint8))
-            axies[image_i][0].set_title(correct_name)
+            # axies[image_i][0].imshow((feature * 255).astype(np.uint8))
+            axies[image_i][0].imshow((feature * 127 + 127).astype(np.uint8))
+            axies[image_i][0].set_title(label_name)
             axies[image_i][0].set_axis_off()
 
             axies[image_i][1].barh(ind + margin, pred_values[::-1], width)
             axies[image_i][1].set_yticks(ind + margin)
-            axies[image_i][1].set_yticklabels(pred_names[::-1])
+            # axies[image_i][1].set_yticklabels(pred_label_names[::-1])
+            # axies[image_i][1].set_yticklabels(pred_label_name)
+            axies[image_i][1].set_title("predicted: " + pred_label_name)
             axies[image_i][1].set_xticks([0, 0.5, 1.0])
 
     @staticmethod
