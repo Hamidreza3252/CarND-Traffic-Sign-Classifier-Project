@@ -44,6 +44,41 @@ class Cnn:
         # return glob.glob('SampleRaw/Lift A - CH12 Data - Breakdown/*.txt')
         return glob.glob(imgs_dir)
 
+    @staticmethod
+    def whiten_images(raw_norm_images, processed_images, batch_size=1000, epsilon=0.1):
+        print("- pre-processing raw images and applying ZCA to whiten them... started")
+
+        original_image_shape = (raw_norm_images.shape[1], raw_norm_images.shape[2], raw_norm_images.shape[3])
+
+        w_images = raw_norm_images.reshape(raw_norm_images.shape[0], raw_norm_images.shape[1] * raw_norm_images.shape[2] * raw_norm_images.shape[3])
+        raw_norm_images_mean = w_images.mean(axis=0)
+
+        for start in range(0, raw_norm_images.shape[0], batch_size):
+            end = min(start + batch_size, raw_norm_images.shape[0])
+
+            # working images, a temporary variable to process images
+            w_images = raw_norm_images[start:end, :, :, :]
+            w_images = w_images.reshape(w_images.shape[0], w_images.shape[1] * w_images.shape[2] * w_images.shape[3])
+
+            # print(w_images.shape)
+            # print(w_images.mean(axis=0).shape)
+
+            # w_images = w_images - w_images.mean(axis=0)
+            w_images = w_images - raw_norm_images_mean
+            # print(w_images.mean(axis=0))
+
+            w_images_cov = np.cov(w_images, rowvar=True)
+            w_images_cov_u, w_images_cov_s, w_images_cov_v = np.linalg.svd(w_images_cov)
+            # print(w_images_cov_u.shape, w_images_cov_s.shape)
+
+            w_images_zca = w_images_cov_u.dot(np.diag(1.0 / np.sqrt(w_images_cov_s + epsilon))).dot(w_images_cov_u.T).dot(w_images)
+            processed_images[start:end, :, :, :] = np.reshape(Cnn.rescale_zca(w_images_zca), (w_images_zca.shape[0], original_image_shape[0],
+                                                                                              original_image_shape[1], original_image_shape[2]))
+
+            print("  in progress... {0:>0.0f}% ".format(start * 100 / raw_norm_images.shape[0], ""), end="\r")
+
+        print("  completed! {0:>10}".format(""))
+
     def read_and_resize_images(file_count=-1, skip_file_count=0, images_dir="", specific_file_name="", target_img_size=128, keep_aspect_ratio=True, **kwargs):
         """Read the raw data in a file or all files in the raw data directory and estimate velocity, considering all missing data
 
@@ -192,6 +227,30 @@ class Cnn:
         normalized_image_data = output_range_min + (x - image_data_min - offset) * output_range_diff / image_data_range_diff
 
         return normalized_image_data
+
+    @staticmethod
+    def denormalize(x, approach="scale"):
+        """
+        Normalize a list of sample image data in the range of 0 to 1
+        : x: List of image data.  The image shape is (32, 32, 3)
+        : return: Numpy array of normalize data
+        """
+
+        if(approach == "scale"):
+            return (x * 255).astype(np.uint8)
+        elif(approach == "offset-scale"):
+            return (x * 127 + 127).astype(np.uint8)
+        else:
+            raise Exception("Approach is wrong or missing")
+
+        return None
+
+    @staticmethod
+    def rescale_zca(x_zca):
+        batches_min_values = np.min(x_zca, axis=1)[:, None].astype(float)
+        batches_max_values = np.max(x_zca, axis=1)[:, None].astype(float)
+
+        return ((x_zca - batches_min_values) / (batches_max_values - batches_min_values) * 255).astype(np.uint8)
 
     def one_hot_encode(self, x):
         """
@@ -497,8 +556,8 @@ class Cnn:
 
             # rectified_feature = (feature * 255.0).astype(int)
 
-            # axies[image_i][0].imshow((feature * 255).astype(np.uint8))
-            axies[image_i][0].imshow((feature * 127 + 127).astype(np.uint8))
+            axies[image_i][0].imshow((feature * 255).astype(np.uint8))
+            # axies[image_i][0].imshow((feature * 127 + 127).astype(np.uint8))
             axies[image_i][0].set_title(label_name)
             axies[image_i][0].set_axis_off()
 
@@ -619,3 +678,13 @@ class Cnn:
 
         # Return the training data in batches of size <batch_size> or less
         return Cnn.batch_features_labels(features, labels, batch_size)
+
+    @staticmethod
+    def plot_flattened_image(X):
+        X = (X * 255).astype(np.uint8)
+
+        plt.figure(figsize=(1.5, 1.5))
+        plt.imshow(X.reshape(32, 32, 3))
+        plt.show()
+        plt.close()
+
