@@ -19,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classificationModules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="587">
-              <caret line="228" column="48" selection-start-line="228" selection-start-column="32" selection-end-line="228" selection-end-column="48" />
+            <state relative-caret-position="324">
+              <caret line="96" column="126" selection-start-line="96" selection-start-column="126" selection-end-line="96" selection-end-column="126" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -42,6 +42,8 @@
       <find>whiten_images</find>
       <find>print_stats</find>
       <find>.min</find>
+      <find>newa</find>
+      <find>astype(f</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -111,10 +113,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13224447" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18701799" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -138,8 +140,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/classificationModules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="587">
-          <caret line="228" column="48" selection-start-line="228" selection-start-column="32" selection-end-line="228" selection-end-column="48" />
+        <state relative-caret-position="324">
+          <caret line="96" column="126" selection-start-line="96" selection-start-column="126" selection-end-line="96" selection-end-column="126" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>

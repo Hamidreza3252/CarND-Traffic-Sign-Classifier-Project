@@ -79,6 +79,56 @@ class Cnn:
 
         print("  completed! {0:>10}".format(""))
 
+    @staticmethod
+    def whiten_images_self_mean(raw_norm_images, processed_images, batch_size=1000, width_offset=0, height_offset=0):
+        print("- pre-processing raw images and applying self-mean correction to whiten them... started")
+
+        original_image_shape = (raw_norm_images.shape[1], raw_norm_images.shape[2], raw_norm_images.shape[3])
+
+        for start in range(0, raw_norm_images.shape[0], batch_size):
+            end = min(start + batch_size, raw_norm_images.shape[0])
+
+            w_images = raw_norm_images[start:end]
+            w_images_cropped = np.zeros_like(w_images)
+            w_images_cropped[:, height_offset:original_image_shape[0]-height_offset, width_offset:original_image_shape[1]-width_offset, :] = \
+                w_images[:, height_offset:original_image_shape[0]-height_offset, width_offset:original_image_shape[1]-width_offset, :]
+
+            w_images_cropped = np.reshape(w_images_cropped,
+                                          (end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2]))
+            processed_w_images = Cnn.standardize(w_images_cropped)
+
+            image_data_mins = processed_w_images.min(axis=1)[:, None].astype(float)
+            image_data_maxs = processed_w_images.max(axis=1)[:, None].astype(float)
+
+            output_range_max = 1.0
+            output_range_min = 0.0
+
+            image_data_range_diffs = image_data_maxs - image_data_mins
+            processed_w_images = ((processed_w_images - image_data_mins) * output_range_max / image_data_range_diffs + output_range_min)
+
+            # print(normalized_image_data.shape)
+            # print(normalized_image_data.min(axis=1))
+            # print(normalized_image_data.max(axis=1))
+
+            # original_images = x_train_raw_data[start_index:end_index]
+
+            processed_images[start:end, :, :, :] = np.reshape((processed_w_images * 255).astype(np.uint8),
+                                                              (end-start, original_image_shape[0], original_image_shape[1], original_image_shape[2]))
+
+            print("  in progress... {0:>0.0f}% ".format(start * 100 / raw_norm_images.shape[0], ""), end="\r")
+
+        print("  completed! {0:>10}".format(""))
+
+    @staticmethod
+    def center(in_vectors):
+        out_vectors = in_vectors - np.mean(in_vectors, axis=1)[:, None].astype(float)
+        return out_vectors
+
+    @staticmethod
+    def standardize(in_vectors):
+        out_vectors = Cnn.center(in_vectors) / np.std(in_vectors, axis=1)[:, None].astype(float)
+        return out_vectors
+
     def read_and_resize_images(file_count=-1, skip_file_count=0, images_dir="", specific_file_name="", target_img_size=128, keep_aspect_ratio=True, **kwargs):
         """Read the raw data in a file or all files in the raw data directory and estimate velocity, considering all missing data
 
