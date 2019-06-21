@@ -573,7 +573,7 @@ class Cnn:
         test_cost = session.run(cost, feed_dict={x_tf_ph: feature_batch, y_tf_ph: label_batch, keep_prob_tf_ph: 1.0})
         valid_accuracy = session.run(accuracy, feed_dict={x_tf_ph: val_images, y_tf_ph: val_labels, keep_prob_tf_ph: 1.0})
 
-        print("Test Cost: {0:0.4f}   ---   Valid Accuracy: {1:0.4f}".format(test_cost, valid_accuracy))
+        print("Test Cost: {0:0.4f}   ---   Valid Accuracy: {1:0.4f}".format(test_cost, valid_accuracy), end="\r")
         # print('Test Accuracy: {}'.format(test_accuracy))
 
     @staticmethod
