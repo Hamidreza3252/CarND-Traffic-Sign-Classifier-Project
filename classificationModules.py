@@ -45,7 +45,7 @@ class Cnn:
         return glob.glob(imgs_dir)
 
     @staticmethod
-    def whiten_images(raw_norm_images, processed_images, batch_size=1000, epsilon=0.1):
+    def whiten_images_zca(raw_norm_images, processed_images, batch_size=1000, epsilon=0.1):
         print("- pre-processing raw images and applying ZCA to whiten them... started")
 
         original_image_shape = (raw_norm_images.shape[1], raw_norm_images.shape[2], raw_norm_images.shape[3])
@@ -159,18 +159,20 @@ class Cnn:
         return images
 
     #@staticmethod
-    def display_images(self, features, label_ids, normalized=True):
+    def display_images(self, features, encoded_label_ids, normalized=True):
 
         max_count = 50
 
-        assert (len(features) == len(label_ids)), "len(features) <> len(labels)"
-        assert (len(features) < max_count and len(label_ids) < max_count), "len of features must be < {0:d}".format(max_count)
+        assert (len(features) == len(encoded_label_ids)), "len(features) <> len(labels)"
+        assert (len(features) < max_count and len(encoded_label_ids) < max_count), "len of features must be < {0:d}".format(max_count)
+
+        label_ids = self.lb.inverse_transform(np.asanyarray(encoded_label_ids))
 
         # label_binarizer = LabelBinarizer()
         # label_binarizer.fit(range(self.n_classes))
         # label_ids = label_binarizer.inverse_transform(np.array(labels))
 
-        # print("Label IDs:", label_ids)
+        # print("Label IDs:", label_ids)whiten_images
 
         fig, axes = plt.subplots(nrows=len(features), ncols=1)
         fig.set_figheight(10 + len(features))

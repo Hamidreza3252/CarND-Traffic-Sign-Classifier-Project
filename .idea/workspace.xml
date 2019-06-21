@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b0b9784-1672-4262-8eea-2bd9963fdcd3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/CarND-Traffic-Sign-Classifier-Project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CarND-Traffic-Sign-Classifier-Project.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Traffic_Sign_Classifier.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Traffic_Sign_Classifier.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classificationModules.py" beforeDir="false" afterPath="$PROJECT_DIR$/classificationModules.py" afterDir="false" />
     </list>
@@ -16,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classificationModules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="161" column="22" selection-start-line="161" selection-start-column="8" selection-end-line="161" selection-end-column="22" />
+            <state relative-caret-position="587">
+              <caret line="228" column="48" selection-start-line="228" selection-start-column="32" selection-end-line="228" selection-end-column="48" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -35,10 +38,10 @@
       <find>keep_prob</find>
       <find>batch_features_labels</find>
       <find>init_mo</find>
-      <find>normalize</find>
-      <find>uint</find>
-      <find>plot_flattened_image</find>
-      <find>mean</find>
+      <find>lb.</find>
+      <find>whiten_images</find>
+      <find>print_stats</find>
+      <find>.min</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -51,7 +54,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="100" />
     <option name="y" value="20" />
     <option name="width" value="1400" />
@@ -108,10 +111,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18701799" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13224447" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -135,8 +138,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/classificationModules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="161" column="22" selection-start-line="161" selection-start-column="8" selection-end-line="161" selection-end-column="22" />
+        <state relative-caret-position="587">
+          <caret line="228" column="48" selection-start-line="228" selection-start-column="32" selection-end-line="228" selection-end-column="48" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
