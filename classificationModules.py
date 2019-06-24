@@ -80,8 +80,10 @@ class Cnn:
         print("  completed! {0:>10}".format(""))
 
     @staticmethod
-    def whiten_images_self_mean(raw_norm_images, processed_images, batch_size=1000, width_offset=0, height_offset=0):
-        print("- pre-processing raw images and applying self-mean correction to whiten them... started")
+    def whiten_images_self_mean(raw_norm_images, processed_images, batch_size=1000, width_offset=0, height_offset=0, epsilon=0.0, verbose=True):
+
+        if(verbose):
+            print("- pre-processing raw images and applying self-mean correction to whiten them... started")
 
         original_image_shape = (raw_norm_images.shape[1], raw_norm_images.shape[2], raw_norm_images.shape[3])
 
@@ -95,6 +97,11 @@ class Cnn:
 
             w_images_cropped = np.reshape(w_images_cropped,
                                           (end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2]))
+
+            if(epsilon != 0.0):
+                # noise_matrices = np.random.uniform(low=0.0, high=0.1, size=(end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2])) * epsilon
+                w_images_cropped += np.random.uniform(low=0.0, high=0.1, size=(end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2])) * epsilon
+
             processed_w_images = Cnn.standardize(w_images_cropped)
 
             image_data_mins = processed_w_images.min(axis=1)[:, None].astype(float)
@@ -115,9 +122,55 @@ class Cnn:
             processed_images[start:end, :, :, :] = np.reshape((processed_w_images * 255).astype(np.uint8),
                                                               (end-start, original_image_shape[0], original_image_shape[1], original_image_shape[2]))
 
-            print("  in progress... {0:>0.0f}% ".format(start * 100 / raw_norm_images.shape[0], ""), end="\r")
+            if(verbose):
+                print("  in progress... {0:>0.0f}% ".format(start * 100 / raw_norm_images.shape[0], ""), end="\r")
 
-        print("  completed! {0:>10}".format(""))
+        if (verbose):
+            print("  completed! {0:>10}".format(""))
+
+    @staticmethod
+    def augment_data(in_features, in_label_ids, epsilon=0.1):
+        unique_label_ids = np.unique(in_label_ids)
+
+        features_counts = np.asanyarray([(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids])
+        print("features count before augmentation:", features_counts)
+        min_features_counts = min(features_counts)
+        # max_features_counts = max(features_counts)
+
+        # features_counts = max_features_counts - features_counts
+
+        total_augmented_features = None
+        total_augmented_label_ids = None
+
+        augmented_features = np.zeros((min_features_counts, in_features.shape[1], in_features.shape[2], in_features.shape[3]))
+
+        for i_label, label_id in enumerate(unique_label_ids):
+            feature_count = features_counts[i_label]
+
+            index_locators = (in_label_ids == label_id)
+            augmented_labels = np.ones(min_features_counts) * label_id
+
+            Cnn.whiten_images_self_mean(in_features[index_locators][:min_features_counts, :, :, :], augmented_features, batch_size=1000, width_offset=2, height_offset=2, epsilon=epsilon, verbose=False)
+
+            if (total_augmented_features is None):
+                total_augmented_features = augmented_features
+            else:
+                total_augmented_features = np.append(total_augmented_features, augmented_features, axis=0)
+
+            if (total_augmented_label_ids is None):
+                total_augmented_label_ids = augmented_labels
+            else:
+                total_augmented_label_ids = np.append(total_augmented_label_ids, augmented_labels, axis=0)
+
+            # print(x_train_norm_data_temp.shape, y_train_raw_data_temp.shape)
+
+        in_features = np.append(in_features, total_augmented_features, axis=0)
+        in_label_ids = np.append(in_label_ids, total_augmented_label_ids, axis=0)
+
+        features_counts = [(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids]
+        print("features count after augmentation:", features_counts)
+
+        return (in_features, in_label_ids)
 
     @staticmethod
     def center(in_vectors):
@@ -555,7 +608,7 @@ class Cnn:
         session.run(optimizer, feed_dict={x_tf_ph: feature_batch, y_tf_ph: label_batch, keep_prob_tf_ph: keep_probability})
 
     @staticmethod
-    def print_stats(session, x_tf_ph, y_tf_ph, keep_prob_tf_ph, feature_batch, label_batch, val_images, val_labels, cost, accuracy):
+    def print_stats(session, x_tf_ph, y_tf_ph, keep_prob_tf_ph, feature_batch, label_batch, val_images, val_labels, cost, accuracy, prefix_text=""):
         """
         Print information about loss and validation accuracy
         : session: Current TensorFlow session
@@ -573,7 +626,7 @@ class Cnn:
         test_cost = session.run(cost, feed_dict={x_tf_ph: feature_batch, y_tf_ph: label_batch, keep_prob_tf_ph: 1.0})
         valid_accuracy = session.run(accuracy, feed_dict={x_tf_ph: val_images, y_tf_ph: val_labels, keep_prob_tf_ph: 1.0})
 
-        print("Test Cost: {0:0.4f}   ---   Valid Accuracy: {1:0.4f}".format(test_cost, valid_accuracy), end="\r")
+        print(prefix_text + "Test Cost: {0:0.4f}   ---   Valid Accuracy: {1:0.4f}".format(test_cost, valid_accuracy), end="\r")
         # print('Test Accuracy: {}'.format(test_accuracy))
 
     @staticmethod
