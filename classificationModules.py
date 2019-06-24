@@ -80,17 +80,18 @@ class Cnn:
         print("  completed! {0:>10}".format(""))
 
     @staticmethod
-    def whiten_images_self_mean(raw_norm_images, processed_images, batch_size=1000, width_offset=0, height_offset=0, epsilon=0.0, verbose=True):
+    def whiten_images_self_mean(in_norm_images, batch_size=1000, width_offset=0, height_offset=0, epsilon=0.0, verbose=True):
 
         if(verbose):
             print("- pre-processing raw images and applying self-mean correction to whiten them... started")
 
-        original_image_shape = (raw_norm_images.shape[1], raw_norm_images.shape[2], raw_norm_images.shape[3])
+        original_image_shape = (in_norm_images.shape[1], in_norm_images.shape[2], in_norm_images.shape[3])
+        processed_images = np.zeros_like(in_norm_images).astype(np.uint8)
 
-        for start in range(0, raw_norm_images.shape[0], batch_size):
-            end = min(start + batch_size, raw_norm_images.shape[0])
+        for start in range(0, in_norm_images.shape[0], batch_size):
+            end = min(start + batch_size, in_norm_images.shape[0])
 
-            w_images = raw_norm_images[start:end]
+            w_images = in_norm_images[start:end]
             w_images_cropped = np.zeros_like(w_images)
             w_images_cropped[:, height_offset:original_image_shape[0]-height_offset, width_offset:original_image_shape[1]-width_offset, :] = \
                 w_images[:, height_offset:original_image_shape[0]-height_offset, width_offset:original_image_shape[1]-width_offset, :]
@@ -111,7 +112,7 @@ class Cnn:
             output_range_min = 0.0
 
             image_data_range_diffs = image_data_maxs - image_data_mins
-            processed_w_images = ((processed_w_images - image_data_mins) * output_range_max / image_data_range_diffs + output_range_min)
+            processed_w_images = (((processed_w_images - image_data_mins) * output_range_max / image_data_range_diffs + output_range_min))
 
             # print(normalized_image_data.shape)
             # print(normalized_image_data.min(axis=1))
@@ -123,13 +124,23 @@ class Cnn:
                                                               (end-start, original_image_shape[0], original_image_shape[1], original_image_shape[2]))
 
             if(verbose):
-                print("  in progress... {0:>0.0f}% ".format(start * 100 / raw_norm_images.shape[0], ""), end="\r")
+                print("  in progress... {0:>0.0f}% ".format(start * 100 / in_norm_images.shape[0], ""), end="\r")
 
         if (verbose):
             print("  completed! {0:>10}".format(""))
 
+        return processed_images
+
     @staticmethod
-    def augment_data(in_features, in_label_ids, epsilon=0.1):
+    def augment_data(in_norm_images, in_label_ids, epsilon=0.1):
+        '''
+
+        :param in_norm_images: normalized features, 0.0 ... 1.0
+        :param in_label_ids:
+        :param epsilon:
+        :return:
+        '''
+
         unique_label_ids = np.unique(in_label_ids)
 
         features_counts = np.asanyarray([(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids])
@@ -142,15 +153,16 @@ class Cnn:
         total_augmented_features = None
         total_augmented_label_ids = None
 
-        augmented_features = np.zeros((min_features_counts, in_features.shape[1], in_features.shape[2], in_features.shape[3]))
+        # augmented_features = np.zeros((min_features_counts, in_norm_images.shape[1], in_norm_images.shape[2], in_norm_images.shape[3])).astype(np.uint8)
 
         for i_label, label_id in enumerate(unique_label_ids):
-            feature_count = features_counts[i_label]
+            # feature_count = features_counts[i_label]
 
             index_locators = (in_label_ids == label_id)
             augmented_labels = np.ones(min_features_counts) * label_id
 
-            Cnn.whiten_images_self_mean(in_features[index_locators][:min_features_counts, :, :, :], augmented_features, batch_size=1000, width_offset=2, height_offset=2, epsilon=epsilon, verbose=False)
+            augmented_features = Cnn.whiten_images_self_mean(in_norm_images[index_locators][:min_features_counts, :, :, :], batch_size=1000, width_offset=0,
+                                                             height_offset=0, epsilon=epsilon, verbose=False)
 
             if (total_augmented_features is None):
                 total_augmented_features = augmented_features
@@ -164,13 +176,15 @@ class Cnn:
 
             # print(x_train_norm_data_temp.shape, y_train_raw_data_temp.shape)
 
-        in_features = np.append(in_features, total_augmented_features, axis=0)
-        in_label_ids = np.append(in_label_ids, total_augmented_label_ids, axis=0)
+        augmented_norm_features = Cnn.normalize(total_augmented_features, approach="scale")
 
-        features_counts = [(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids]
+        out_norm_images = np.append(in_norm_images, augmented_norm_features, axis=0)
+        out_label_ids = np.append(in_label_ids, total_augmented_label_ids, axis=0)
+
+        features_counts = [(np.where(out_label_ids == label_id))[0].size for label_id in unique_label_ids]
         print("features count after augmentation:", features_counts)
 
-        return (in_features, in_label_ids)
+        return (out_norm_images, out_label_ids)
 
     @staticmethod
     def center(in_vectors):
