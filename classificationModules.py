@@ -101,7 +101,7 @@ class Cnn:
 
             if(epsilon != 0.0):
                 # noise_matrices = np.random.uniform(low=0.0, high=0.1, size=(end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2])) * epsilon
-                w_images_cropped += np.random.uniform(low=0.0, high=0.1, size=(end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2])) * epsilon
+                w_images_cropped += np.random.uniform(low=0.0, high=1.0, size=(end-start, original_image_shape[0] * original_image_shape[1] * original_image_shape[2])) * epsilon
 
             processed_w_images = Cnn.standardize(w_images_cropped)
 
@@ -112,7 +112,7 @@ class Cnn:
             output_range_min = 0.0
 
             image_data_range_diffs = image_data_maxs - image_data_mins
-            processed_w_images = (((processed_w_images - image_data_mins) * output_range_max / image_data_range_diffs + output_range_min))
+            processed_w_images = np.clip((((processed_w_images - image_data_mins) * output_range_max / image_data_range_diffs + output_range_min)), 0.0, 1.0)
 
             # print(normalized_image_data.shape)
             # print(normalized_image_data.min(axis=1))
@@ -138,10 +138,11 @@ class Cnn:
         :param in_norm_images: normalized features, 0.0 ... 1.0
         :param in_label_ids:
         :param epsilon:
-        :return:
+        :return: out_norm_images, out_label_ids, features_counts
         '''
 
         unique_label_ids = np.unique(in_label_ids)
+        # original_image_shape = (in_norm_images.shape[1], in_norm_images.shape[2], in_norm_images.shape[3])
 
         features_counts = np.asanyarray([(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids])
         print("features count before augmentation:", features_counts)
@@ -153,6 +154,8 @@ class Cnn:
         total_augmented_features = None
         total_augmented_label_ids = None
 
+        # batch_size = 1000
+
         # augmented_features = np.zeros((min_features_counts, in_norm_images.shape[1], in_norm_images.shape[2], in_norm_images.shape[3])).astype(np.uint8)
 
         for i_label, label_id in enumerate(unique_label_ids):
@@ -160,9 +163,12 @@ class Cnn:
 
             index_locators = (in_label_ids == label_id)
             augmented_labels = np.ones(min_features_counts) * label_id
+            augmented_features = in_norm_images[index_locators, :, :, :][:min_features_counts]
 
-            augmented_features = Cnn.whiten_images_self_mean(in_norm_images[index_locators][:min_features_counts, :, :, :], batch_size=1000, width_offset=0,
-                                                             height_offset=0, epsilon=epsilon, verbose=False)
+            augmented_features += np.random.uniform(low=0.0, high=1.0, size=(augmented_features.shape[0], augmented_features.shape[1],
+                                                                             augmented_features.shape[2], augmented_features.shape[3])) * epsilon
+
+            augmented_features = np.clip(augmented_features, 0.0, 1.0)
 
             if (total_augmented_features is None):
                 total_augmented_features = augmented_features
@@ -174,17 +180,21 @@ class Cnn:
             else:
                 total_augmented_label_ids = np.append(total_augmented_label_ids, augmented_labels, axis=0)
 
-            # print(x_train_norm_data_temp.shape, y_train_raw_data_temp.shape)
+        # augmented_norm_features = Cnn.normalize(total_augmented_features, approach="scale")
 
-        augmented_norm_features = Cnn.normalize(total_augmented_features, approach="scale")
+        # out_norm_images = np.append(in_norm_images, augmented_norm_features, axis=0)
 
-        out_norm_images = np.append(in_norm_images, augmented_norm_features, axis=0)
+        out_norm_images = np.append(in_norm_images, total_augmented_features, axis=0)
         out_label_ids = np.append(in_label_ids, total_augmented_label_ids, axis=0)
 
         features_counts = [(np.where(out_label_ids == label_id))[0].size for label_id in unique_label_ids]
         print("features count after augmentation:", features_counts)
 
-        return (out_norm_images, out_label_ids)
+        arg_sort_indices = np.argsort(out_label_ids)
+        out_norm_images = out_norm_images[arg_sort_indices]
+        out_label_ids = out_label_ids[arg_sort_indices]
+
+        return (out_norm_images, out_label_ids, features_counts)
 
     @staticmethod
     def center(in_vectors):
