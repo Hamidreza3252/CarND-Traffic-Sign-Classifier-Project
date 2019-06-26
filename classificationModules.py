@@ -206,6 +206,57 @@ class Cnn:
         out_vectors = Cnn.center(in_vectors) / np.std(in_vectors, axis=1)[:, None].astype(float)
         return out_vectors
 
+    @staticmethod
+    def get_features_of_types(in_features, in_label_ids, filter_label_ids):
+        # unique_label_ids = np.unique(in_label_ids)
+
+        out_features = np.empty((1, in_features.shape[1], in_features.shape[2], in_features.shape[3]))
+        # out_features = np.array([])
+        out_label_ids = np.array([])
+
+        for i_label, label_id in enumerate(filter_label_ids):
+            # feature_count = features_counts[i_label]
+
+            index_locators = (in_label_ids == label_id)
+
+            out_label_ids = np.append(out_label_ids, in_label_ids[index_locators])
+            out_features = np.append(out_features, in_features[index_locators, :, :, :], axis=0)
+
+        out_features = out_features[1:]
+        features_counts = np.asanyarray([(np.where(out_label_ids == label_id))[0].size for label_id in filter_label_ids])
+
+        return (out_features, out_label_ids, features_counts)
+
+    @staticmethod
+    def select_equally_sized_data_sets(in_features, in_label_ids, n_classes, unique_label_ids, features_counts):
+        if (unique_label_ids is None):
+            unique_label_ids = np.unique(in_label_ids)
+
+        if(features_counts is None):
+            features_counts = [(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids]
+
+        new_feature_count = np.min(features_counts)
+        selected_features = np.zeros((new_feature_count * n_classes,
+                                      in_features.shape[1], in_features.shape[2], in_features.shape[3]))
+        selected_labels = np.zeros((new_feature_count * n_classes))
+
+        from_feature_count = 0
+
+        for i_label, label_id in enumerate(unique_label_ids):
+            to_feature_count = from_feature_count + new_feature_count
+
+            selected_features[i_label * new_feature_count:(i_label + 1) * new_feature_count, :, :, :] = \
+                in_features[from_feature_count:to_feature_count, :, :, :]
+
+            selected_labels[i_label * new_feature_count:(i_label + 1) * new_feature_count] = \
+                in_label_ids[from_feature_count:to_feature_count]
+
+            from_feature_count += features_counts[i_label]
+
+        new_features_counts = [(np.where(selected_labels == label_id))[0].size for label_id in unique_label_ids]
+
+        return (selected_features, selected_labels, new_features_counts)
+
     def read_and_resize_images(file_count=-1, skip_file_count=0, images_dir="", specific_file_name="", target_img_size=128, keep_aspect_ratio=True, **kwargs):
         """Read the raw data in a file or all files in the raw data directory and estimate velocity, considering all missing data
 
@@ -474,8 +525,9 @@ class Cnn:
         print("pool_ksize:", pool_ksize)
         print("pool_strides", pool_strides)
 
-        conv_layer = tf.nn.conv2d(x_tensor, weights, conv_strides, "SAME")
-        conv_layer = tf.nn.bias_add(conv_layer, biases, name=layer_name)
+        conv_layer = tf.nn.conv2d(x_tensor, weights, conv_strides, "VALID") + biases
+
+        # conv_layer = tf.nn.bias_add(conv_layer, biases, name=layer_name)
 
         if(batch_normalizer):
             print("batch_normalizer:", batch_normalizer)
@@ -485,10 +537,11 @@ class Cnn:
         conv_layer = tf.nn.relu(conv_layer)
         # conv_layer = tf.nn.tanh(conv_layer)
         # conv_layer = tf.nn.leaky_relu(conv_layer)
-        conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding="SAME")
+        conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding="VALID")
 
         # H1: conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding='SAME')
 
+        print("conv_layer:", conv_layer.shape)
         print("conv2d_maxpool... End")
         print("")
 

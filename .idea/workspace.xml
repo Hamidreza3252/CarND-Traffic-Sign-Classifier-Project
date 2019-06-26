@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b0b9784-1672-4262-8eea-2bd9963fdcd3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LeNet-Lab-Solution.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/LeNet-Lab-Solution.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Traffic_Sign_Classifier.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Traffic_Sign_Classifier.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classificationModules.py" beforeDir="false" afterPath="$PROJECT_DIR$/classificationModules.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_classification-20.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/image_classification-20.ipynb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,7 +21,7 @@
         <entry file="file://$PROJECT_DIR$/classificationModules.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
-              <caret line="89" lean-forward="true" selection-start-line="89" selection-end-line="89" />
+              <caret line="375" column="29" selection-start-line="375" selection-start-column="8" selection-end-line="375" selection-end-column="29" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -32,7 +37,6 @@
       <find>assert</find>
       <find>_load_label_names</find>
       <find>keep_prob</find>
-      <find>batch_features_labels</find>
       <find>init_mo</find>
       <find>lb.</find>
       <find>whiten_images</find>
@@ -41,6 +45,10 @@
       <find>newa</find>
       <find>astype(f</find>
       <find>astype</find>
+      <find>one_h</find>
+      <find>self.lb.</find>
+      <find>unique_label_ids</find>
+      <find>batch_features_labels</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -138,7 +146,7 @@
     <entry file="file://$PROJECT_DIR$/classificationModules.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="89" lean-forward="true" selection-start-line="89" selection-end-line="89" />
+          <caret line="375" column="29" selection-start-line="375" selection-start-column="8" selection-end-line="375" selection-end-column="29" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
