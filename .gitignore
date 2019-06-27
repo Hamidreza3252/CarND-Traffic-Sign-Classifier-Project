@@ -5,7 +5,5 @@ models
 *.swp
 *.p
 traffic-signs-data
-saved-model-01
-saved-model-02
 venv
 .idea
