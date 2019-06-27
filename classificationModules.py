@@ -257,6 +257,41 @@ class Cnn:
 
         return (selected_features, selected_labels, new_features_counts)
 
+    @staticmethod
+    def output_feature_map(image_input, tf_input_ph, tf_activation, tf_session, activation_min=-1, activation_max=-1, plt_num=1):
+        """
+        :param image_input: the test image being fed into the network to produce the feature maps
+        :param tf_input_ph: tensorflow place-holder for CNN layer to fed into
+        :param tf_activation: should be a tf variable name used during your training procedure that represents
+            the calculated state of a specific weight layer
+        :param activation_min / max: can be used to view the activation contrast in more detail,
+            by default matplot sets min and max to the actual min and max values of the output
+        :param plt_num: used to plot out multiple different weight feature map sets on the same block,
+            just extend the plt number for each new feature map entry
+        """
+        # Here make sure to preprocess your image_input in a way your network expects
+        # with size, normalization, ect if needed
+        # image_input =
+        # Note: x should be the same name as your network's tensorflow data placeholder variable
+        # If you get an error tf_activation is not defined it may be having trouble accessing the variable from inside a function
+
+        activation = tf_activation.eval(session=tf_session, feed_dict={tf_input_ph: image_input})
+        featuremaps = activation.shape[3]
+        plt.figure(plt_num, figsize=(15, 15))
+
+        for featuremap in range(featuremaps):
+            plt.subplot(6, 8, featuremap + 1)  # sets the number of feature maps to show on each row and column
+            plt.title('FeatureMap ' + str(featuremap))  # displays the feature map number
+            if activation_min != -1 & activation_max != -1:
+                plt.imshow(activation[0, :, :, featuremap], interpolation="nearest", vmin=activation_min, vmax=activation_max, cmap="gray")
+            elif activation_max != -1:
+                plt.imshow(activation[0, :, :, featuremap], interpolation="nearest", vmax=activation_max, cmap="gray")
+            elif activation_min != -1:
+                plt.imshow(activation[0, :, :, featuremap], interpolation="nearest", vmin=activation_min, cmap="gray")
+            else:
+                plt.imshow(activation[0, :, :, featuremap], interpolation="nearest", cmap="gray")
+
+    @staticmethod
     def read_and_resize_images(file_count=-1, skip_file_count=0, images_dir="", specific_file_name="", target_img_size=128, keep_aspect_ratio=True, **kwargs):
         """Read the raw data in a file or all files in the raw data directory and estimate velocity, considering all missing data
 
@@ -537,7 +572,7 @@ class Cnn:
         conv_layer = tf.nn.relu(conv_layer)
         # conv_layer = tf.nn.tanh(conv_layer)
         # conv_layer = tf.nn.leaky_relu(conv_layer)
-        conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding="VALID")
+        conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding="VALID", name=layer_name)
 
         # H1: conv_layer = tf.nn.max_pool(conv_layer, ksize=pool_ksize, strides=pool_strides, padding='SAME')
 

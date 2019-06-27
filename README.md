@@ -23,7 +23,6 @@ Before Whitenning             |  After Whitenning
 ![Before](Images/sample-01-d.png)  |  ![After](Images/sample-01.png)  
  | 
 ![Before](Images/sample-02-d.png)  |  ![After](Images/sample-02.png)  
- |
 
 ***
 > **Note**:
