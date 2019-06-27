@@ -353,7 +353,7 @@ class Cnn:
         # print("Label IDs:", label_ids)whiten_images
 
         fig, axes = plt.subplots(nrows=len(features), ncols=1)
-        fig.set_figheight(10 + len(features))
+        fig.set_figheight(5 + len(features))
         fig.set_figwidth(10)
         fig.tight_layout()
         fig.suptitle("Display sample images", fontsize=10, y=1.02)
@@ -704,6 +704,8 @@ class Cnn:
         valid_accuracy = session.run(accuracy, feed_dict={x_tf_ph: val_images, y_tf_ph: val_labels, keep_prob_tf_ph: 1.0})
 
         print(prefix_text + "Test Cost: {0:0.4f}   ---   Valid Accuracy: {1:0.4f}".format(test_cost, valid_accuracy), end="\r")
+
+        return (test_cost, valid_accuracy)
         # print('Test Accuracy: {}'.format(test_accuracy))
 
     @staticmethod
@@ -713,19 +715,21 @@ class Cnn:
         """
         raise NotImplementedError("deprecated method")
 
-    def display_image_predictions(self, features, encoded_label_ids, predicted_label_ids):
+    def display_image_predictions(self, features, encoded_label_ids, predicted_label_ids, max_top_count=0):
 
         # self.label_names = {}
 
         label_ids = self.lb.inverse_transform(np.asanyarray(encoded_label_ids))
 
-        fig, axies = plt.subplots(nrows=len(features), ncols=2)
-        fig.set_figheight(12)
+        fig, axes = plt.subplots(nrows=len(features), ncols=2)
+        fig.set_figheight(15)
         fig.set_figwidth(12)
         fig.tight_layout()
         fig.suptitle("Softmax Predictions", fontsize=20, y=1.1)
 
-        n_classes = len(self.label_names)
+        # max_label_count = min(pred_indicies.size, max_top_count)
+
+        n_classes = min(len(self.label_names), max_top_count)
         margin = 0.05
         ind = np.arange(n_classes)
         width = (1. - 2. * margin) / n_classes
@@ -738,17 +742,22 @@ class Cnn:
 
             # rectified_feature = (feature * 255.0).astype(int)
 
-            axies[image_i][0].imshow((feature * 255).astype(np.uint8))
-            # axies[image_i][0].imshow((feature * 127 + 127).astype(np.uint8))
-            axies[image_i][0].set_title(label_name)
-            axies[image_i][0].set_axis_off()
+            axis = axes[image_i]
 
-            axies[image_i][1].barh(ind + margin, pred_values[::-1], width)
-            axies[image_i][1].set_yticks(ind + margin)
-            # axies[image_i][1].set_yticklabels(pred_label_names[::-1])
-            # axies[image_i][1].set_yticklabels(pred_label_name)
-            axies[image_i][1].set_title("predicted: " + pred_label_name)
-            axies[image_i][1].set_xticks([0, 0.5, 1.0])
+            axis[0].imshow((feature * 255).astype(np.uint8))
+            # axes[0].imshow((feature * 127 + 127).astype(np.uint8))
+            axis[0].set_title(label_name)
+            axis[0].set_axis_off()
+
+            axis[1].barh(ind + margin, pred_values[::-1][-n_classes:], width)
+            axis[1].set_yticks(ind + margin)
+            axis[1].set_yticklabels(pred_label_names[-n_classes:][::-1])
+            # axis[1].set_yticklabels(pred_label_name)
+            axis[1].set_title("predicted: " + pred_label_name)
+            axis[1].set_xticks([0, 0.5, 1.0])
+
+            # print(pred_label_names[:max_label_count][::-1])
+        # return pred_values
 
     @staticmethod
     def evaluate_roc_curve(test_labels, predicted_y_probabilities):
