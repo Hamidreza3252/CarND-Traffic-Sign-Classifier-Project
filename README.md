@@ -61,7 +61,24 @@ For the FC layers, dropout appraoch is used to prevent overfitting.
 
 ### Results and Discussions  
 
-After going through 50 iterations on the training data batches - `epochs = 50` - the validatoin accuracy of close to `97%` is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the **test** data set that is not exposed to the model at all. The overall test accuracy is observed to be `95%`. 
+- **Before Data Augmentation**:  
+    After going through 100 iterations on the training data batches - `epochs = 100` - the validatoin accuracy of close to `89%` is achieved - using smaller network. Tracking the training-loss suggets that the model overfit the training data, as the test loss - using the training data - keep decreasing while validation accuracy almost saturates - see the training log below.  
+    
+    
+`Training... start
+Epoch 10: Test Cost: 0.1957 --- Valid Accuracy: 0.8329 Epoch 20: Test Cost: 0.0632 --- Valid Accuracy: 0.8719
+Epoch 30: Test Cost: 0.0262 --- Valid Accuracy: 0.8878
+Epoch 40: Test Cost: 0.0135 --- Valid Accuracy: 0.8961
+Epoch 50: Test Cost: 0.0165 --- Valid Accuracy: 0.8855
+Epoch 60: Test Cost: 0.0038 --- Valid Accuracy: 0.8882
+Epoch 70: Test Cost: 0.0050 --- Valid Accuracy: 0.8966
+Epoch 80: Test Cost: 0.0021 --- Valid Accuracy: 0.8868
+Epoch 90: Test Cost: 0.0024 --- Valid Accuracy: 0.8791
+Epoch 100: Test Cost: 0.0013 --- Valid Accuracy: 0.8871
+Training... end`  
+
+- **After Data Augmentation**:  
+    After going through 50 iterations on the training data batches - `epochs = 50` - the validatoin accuracy of close to `97%` is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the **test** data set that is not exposed to the model at all. The overall test accuracy is observed to be `95%`. 
 
 ### Potential Improvement Areas  
 
