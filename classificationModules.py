@@ -145,7 +145,7 @@ class Cnn:
         # original_image_shape = (in_norm_images.shape[1], in_norm_images.shape[2], in_norm_images.shape[3])
 
         features_counts = np.asanyarray([(np.where(in_label_ids == label_id))[0].size for label_id in unique_label_ids])
-        print("features count before augmentation:", features_counts)
+        # print("features count before augmentation:", features_counts)
         min_features_counts = min(features_counts)
         # max_features_counts = max(features_counts)
 
@@ -188,7 +188,7 @@ class Cnn:
         out_label_ids = np.append(in_label_ids, total_augmented_label_ids, axis=0)
 
         features_counts = [(np.where(out_label_ids == label_id))[0].size for label_id in unique_label_ids]
-        print("features count after augmentation:", features_counts)
+        # print("features count after augmentation:", features_counts)
 
         arg_sort_indices = np.argsort(out_label_ids)
         out_norm_images = out_norm_images[arg_sort_indices]
@@ -760,7 +760,7 @@ class Cnn:
         fig.set_figheight(15)
         fig.set_figwidth(12)
         fig.tight_layout()
-        fig.suptitle("Softmax Predictions", fontsize=20, y=1.1)
+        fig.suptitle("Top Softmax Predictions", fontsize=20, y=1.1)
 
         # max_label_count = min(pred_indicies.size, max_top_count)
 

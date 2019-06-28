@@ -13,17 +13,15 @@ In this project, I train a CNN model to classify traffic sign images using the [
 
 > **Note**: `Cnn` wrapper class is created alongside this jupyter notebook for better code review and readability. The concept is similar to that os `Keras` library, but of course supporting a lot more limited functionalities, just to cover the requirements of this project.  
 
-### Laoding and exploring the provided raw data  
+### Dataset Exploration  
 
 - **Whitenning Images**:  
     While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  
 
-Before Whitenning             |  After Whitenning
+Before Whitenning          |  After Whitenning
 :-------------------------:|:-------------------------:
 ![Before](Images/sample-01-d.png)  |  ![After](Images/sample-01.png)  
- | 
 ![Before](Images/sample-02-d.png)  |  ![After](Images/sample-02.png)  
- |
 ![Before](Images/sample-03-d.png)  |  ![After](Images/sample-03.png)  
 
 ***
@@ -54,7 +52,7 @@ There are couple of other appraoches proposed in some literatures for image whit
     
     `features_counts: [1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440]`  
     
-### Defining the CNN model:  
+### Design and Test a Model Architecture  
 
 The model arcitecture consists of five CNN layers followed two fully-connected - FC - layers. The parameters of the CNN model is selected and tuned such that it becomes smallet as it goes deeper, i.e. more feature depths but smaller layers. The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.  
 
@@ -82,7 +80,7 @@ For the FC layers, dropout appraoch is used to prevent overfitting.
 - **After Data Augmentation**:  
     After going through 50 iterations on the training data batches - `epochs = 50` - the validatoin accuracy of close to `97%` is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the **test** data set that is not exposed to the model at all. The overall test accuracy is observed to be `95%`. 
 
-### Potential Improvement Areas  
+### Potential Areas of Improvement  
 
 I can think of couple of improvement areas that I would like to explore. 
 
