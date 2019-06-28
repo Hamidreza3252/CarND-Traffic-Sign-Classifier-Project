@@ -61,7 +61,7 @@ For the FC layers, dropout appraoch is used to prevent overfitting.
 
 ### Results and Discussions  
 
-After going through 50 iterations on the training data batches - `epochs = 50` - the validatoin accuracy of close to `98%` is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the **test** data set that is not exposed to the model at all. The overall test accuracy is close to `95%`. 
+After going through 50 iterations on the training data batches - `epochs = 50` - the validatoin accuracy of close to `97%` is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the **test** data set that is not exposed to the model at all. The overall test accuracy is observed to be `95%`. 
 
 ### Potential Improvement Areas  
 
