@@ -13,9 +13,58 @@ In this project, I train a CNN model to classify traffic sign images using the [
 
 > **Note**: `Cnn` wrapper class is created alongside this jupyter notebook for better code review and readability. The concept is similar to that os `Keras` library, but of course supporting a lot more limited functionalities, just to cover the requirements of this project.  
 
-### Dataset Exploration  
+### Dataset Exploration and Pre-Processing  
 
-- **Whitenning Images**:  
+This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set). 
+
+Class ID                      |  Description    |    Original Dataset Size   |   Augmented and Pre-Processed Dataset Size
+:----------------------------:|:---------------:|:--------------------------:|:------------------------------------------:
+0  |    Speed limit (20km/h)                                 |  180    |   1440
+1  |    Speed limit (30km/h)                                 |  1980   |   1440
+2  |    Speed limit (50km/h)                                 |  2010   |   1440
+3  |    Speed limit (60km/h)                                 |  1260   |   1440
+4  |    Speed limit (70km/h)                                 |  1770   |   1440
+5  |    Speed limit (80km/h)                                 |  1650   |   1440
+6  |    End of speed limit (80km/h)                          |  360    |   1440
+7  |    Speed limit (100km/h)                                |  1290   |   1440
+8  |    Speed limit (120km/h)                                |  1260   |   1440
+9  |    No passing                                           |  1320   |   1440
+10 |    No passing for vehicles over 3.5 metric tons         |  1800   |   1440
+11 |    Right-of-way at the next intersection                |  1170   |   1440
+12 |    Priority road                                        |  1890   |   1440
+13 |    Yield                                                |  1920   |   1440
+14 |    Stop                                                 |  690    |   1440
+15 |    No vehicles                                          |  540    |   1440
+16 |    Vehicles over 3.5 metric tons prohibited             |  360    |   1440
+17 |    No entry                                             |  990    |   1440
+18 |    General caution                                      |  1080   |   1440
+19 |    Dangerous curve to the left                          |  180    |   1440
+20 |    Dangerous curve to the right                         |  300    |   1440
+21 |    Double curve                                         |  270    |   1440
+22 |    Bumpy road                                           |  330    |   1440
+23 |    Slippery road                                        |  450    |   1440
+24 |    Road narrows on the right                            |  240    |   1440
+25 |    Road work                                            |  1350   |   1440
+26 |    Traffic signals                                      |  540    |   1440
+27 |    Pedestrians                                          |  210    |   1440
+28 |    Children crossing                                    |  480    |   1440
+29 |    Bicycles crossing                                    |  240    |   1440
+30 |    Beware of ice/snow                                   |  390    |   1440
+31 |    Wild animals crossing                                |  690    |   1440
+32 |    End of all speed and passing limits                  |  210    |   1440
+33 |    Turn right ahead                                     |  599    |   1440
+34 |    Turn left ahead                                      |  360    |   1440
+35 |    Ahead only                                           |  1080   |   1440
+36 |    Go straight or right                                 |  330    |   1440
+37 |    Go straight or left                                  |  180    |   1440
+38 |    Keep right                                           |  1860   |   1440
+39 |    Keep left                                            |  270    |   1440
+40 |    Roundabout mandatory                                 |  300    |   1440
+41 |    End of no passing                                    |  210    |   1440
+42 |    End of no passing by vehicles over 3.5 metric tons   |  210    |   1440
+
+
+- **Pre-processing rwa data images via applying a whitenning algorithm:**  
     While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  
 
 Before Whitenning          |  After Whitenning
@@ -35,8 +84,8 @@ There are couple of other appraoches proposed in some literatures for image whit
 
   
 
-- **Data Augmentation**:  
-    Why is it required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category:  
+- **Data Augmentation - generating fake training data:**  
+    Why is 'data augmentation' required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category (from column **'Original Dataset Size'** of  above table):  
     
     `features_counts: [ 180 1980 2010 1260 1770 1650  360 1290 1260 1320 1800 1170 1890 1920 690  540  360  990 1080  180  300  270  330 450  240 1350  540  210 480  240  390  690  210  599  360 1080  330  180 1860  270  300  210 210]`
     
@@ -48,13 +97,17 @@ There are couple of other appraoches proposed in some literatures for image whit
     
     `features_counts: [1440, 3240, 3270, 2520, 3030, 2910, 1620, 2550, 2520, 2580, 3060, 2430, 3150, 3180, 1950, 1800, 1620, 2250, 2340, 1440, 1560, 1530, 1590, 1710, 1500, 2610, 1800, 1470, 1740, 1500, 1650, 1950, 1470, 1859, 1620, 2340, 1590, 1440, 3120, 1530, 1560, 1470, 1470]`  
         
-    However, the training data is loaded such that each category has equal sample size as follows:  
+    However, the training data is loaded such that each category has equal sample size as follows (from column **'Augmented and Pre-Processed Dataset Size'** of  above table):  
     
     `features_counts: [1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440]`  
     
 ### Design and Test a Model Architecture  
 
-The model arcitecture consists of five CNN layers followed two fully-connected - FC - layers. The parameters of the CNN model is selected and tuned such that it becomes smallet as it goes deeper, i.e. more feature depths but smaller layers. The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.  
+The model arcitecture consists of six CNN layers followed by two fully-connected - FC - layers. The number of parameters of the CNN layers model are tuned such that the feature depth increases as we move deeper and the output layer becomes smaller (see fig. below)
+
+![LeNet](Images/lenet.png)
+
+For this project, feature depths of the CNN layers are 3 - for image inputs, 16, 32, 32, 64, 64, and 128). The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.  
 
 For the FC layers, dropout appraoch is used to prevent overfitting. 
 

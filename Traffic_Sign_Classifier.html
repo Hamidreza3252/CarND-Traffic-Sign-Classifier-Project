@@ -13160,8 +13160,278 @@ div#notebook {
 </ul>
 <blockquote><p><strong>Note</strong>: <code>Cnn</code> wrapper class is created alongside this jupyter notebook for better code review and readability. The concept is similar to that os <code>Keras</code> library, but of course supporting a lot more limited functionalities, just to cover the requirements of this project.</p>
 </blockquote>
-<h3 id="Dataset-Exploration">Dataset Exploration<a class="anchor-link" href="#Dataset-Exploration">&#182;</a></h3><ul>
-<li><strong>Whitenning Images</strong>:<br>
+<h3 id="Dataset-Exploration-and-Pre-Processing">Dataset Exploration and Pre-Processing<a class="anchor-link" href="#Dataset-Exploration-and-Pre-Processing">&#182;</a></h3><p>This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set).</p>
+<table>
+<thead><tr>
+<th style="text-align:center">Class ID</th>
+<th style="text-align:center">Description</th>
+<th style="text-align:center">Original Dataset Size</th>
+<th style="text-align:center">Augmented and Pre-Processed Dataset Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Speed limit (20km/h)</td>
+<td style="text-align:center">180</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Speed limit (30km/h)</td>
+<td style="text-align:center">1980</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">Speed limit (50km/h)</td>
+<td style="text-align:center">2010</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">Speed limit (60km/h)</td>
+<td style="text-align:center">1260</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">Speed limit (70km/h)</td>
+<td style="text-align:center">1770</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">Speed limit (80km/h)</td>
+<td style="text-align:center">1650</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">End of speed limit (80km/h)</td>
+<td style="text-align:center">360</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">Speed limit (100km/h)</td>
+<td style="text-align:center">1290</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">Speed limit (120km/h)</td>
+<td style="text-align:center">1260</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">No passing</td>
+<td style="text-align:center">1320</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">No passing for vehicles over 3.5 metric tons</td>
+<td style="text-align:center">1800</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">Right-of-way at the next intersection</td>
+<td style="text-align:center">1170</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">Priority road</td>
+<td style="text-align:center">1890</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">Yield</td>
+<td style="text-align:center">1920</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">Stop</td>
+<td style="text-align:center">690</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">No vehicles</td>
+<td style="text-align:center">540</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">Vehicles over 3.5 metric tons prohibited</td>
+<td style="text-align:center">360</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">No entry</td>
+<td style="text-align:center">990</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">General caution</td>
+<td style="text-align:center">1080</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">Dangerous curve to the left</td>
+<td style="text-align:center">180</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">Dangerous curve to the right</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">21</td>
+<td style="text-align:center">Double curve</td>
+<td style="text-align:center">270</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">22</td>
+<td style="text-align:center">Bumpy road</td>
+<td style="text-align:center">330</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">23</td>
+<td style="text-align:center">Slippery road</td>
+<td style="text-align:center">450</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">24</td>
+<td style="text-align:center">Road narrows on the right</td>
+<td style="text-align:center">240</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Road work</td>
+<td style="text-align:center">1350</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">26</td>
+<td style="text-align:center">Traffic signals</td>
+<td style="text-align:center">540</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">27</td>
+<td style="text-align:center">Pedestrians</td>
+<td style="text-align:center">210</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">28</td>
+<td style="text-align:center">Children crossing</td>
+<td style="text-align:center">480</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">29</td>
+<td style="text-align:center">Bicycles crossing</td>
+<td style="text-align:center">240</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beware of ice/snow</td>
+<td style="text-align:center">390</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">31</td>
+<td style="text-align:center">Wild animals crossing</td>
+<td style="text-align:center">690</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">32</td>
+<td style="text-align:center">End of all speed and passing limits</td>
+<td style="text-align:center">210</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">33</td>
+<td style="text-align:center">Turn right ahead</td>
+<td style="text-align:center">599</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">34</td>
+<td style="text-align:center">Turn left ahead</td>
+<td style="text-align:center">360</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">35</td>
+<td style="text-align:center">Ahead only</td>
+<td style="text-align:center">1080</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">36</td>
+<td style="text-align:center">Go straight or right</td>
+<td style="text-align:center">330</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">37</td>
+<td style="text-align:center">Go straight or left</td>
+<td style="text-align:center">180</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">38</td>
+<td style="text-align:center">Keep right</td>
+<td style="text-align:center">1860</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">39</td>
+<td style="text-align:center">Keep left</td>
+<td style="text-align:center">270</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Roundabout mandatory</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">41</td>
+<td style="text-align:center">End of no passing</td>
+<td style="text-align:center">210</td>
+<td style="text-align:center">1440</td>
+</tr>
+<tr>
+<td style="text-align:center">42</td>
+<td style="text-align:center">End of no passing by vehicles over 3.5 metric tons</td>
+<td style="text-align:center">210</td>
+<td style="text-align:center">1440</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Pre-processing rwa data images via applying a whitenning algorithm:</strong><br>
   While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function <code>Cnn.whiten_images_self_mean</code> that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  </li>
 </ul>
 <table>
@@ -13198,19 +13468,21 @@ There are couple of other appraoches proposed in some literatures for image whit
 <li><a href="https://towardsdatascience.com/image-pre-processing-c1aec0be3edf">Image Pre-processing for Deep Learning</a> </li>
 </ul>
 <ul>
-<li><p><strong>Data Augmentation</strong>:<br>
-  Why is it required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category:</p>
+<li><p><strong>Data Augmentation - generating fake training data:</strong><br>
+  Why is 'data augmentation' required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category (from column <strong>'Original Dataset Size'</strong> of  above table):</p>
 <p><code>features_counts: [ 180 1980 2010 1260 1770 1650  360 1290 1260 1320 1800 1170 1890 1920 690  540  360  990 1080  180  300  270  330 450  240 1350  540  210 480  240  390  690  210  599  360 1080  330  180 1860  270  300  210 210]</code></p>
 <p>So it is needed to augment the data in a logical way. My simple approach is to generate some fake images of each category by applying slight noises. Function <code>Cnn.augment_data</code> is created to perform this job. After data augmentation, equal sample size of each category is selected form the post-processed and augmented data and the results are saved into the <code>traffic-signs-data</code> directory for future uses.</p>
 <blockquote><p><strong>Note</strong>: This task needs to be run only once, therefore for future runs, the post-processed data will be loaded for training, validation, and test steps.</p>
 </blockquote>
 <p>After training-data augmentation process, each category will have enough number of data as follows.</p>
 <p><code>features_counts: [1440, 3240, 3270, 2520, 3030, 2910, 1620, 2550, 2520, 2580, 3060, 2430, 3150, 3180, 1950, 1800, 1620, 2250, 2340, 1440, 1560, 1530, 1590, 1710, 1500, 2610, 1800, 1470, 1740, 1500, 1650, 1950, 1470, 1859, 1620, 2340, 1590, 1440, 3120, 1530, 1560, 1470, 1470]</code></p>
-<p>However, the training data is loaded such that each category has equal sample size as follows:</p>
+<p>However, the training data is loaded such that each category has equal sample size as follows (from column <strong>'Augmented and Pre-Processed Dataset Size'</strong> of  above table):</p>
 <p><code>features_counts: [1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440]</code></p>
 </li>
 </ul>
-<h3 id="Design-and-Test-a-Model-Architecture">Design and Test a Model Architecture<a class="anchor-link" href="#Design-and-Test-a-Model-Architecture">&#182;</a></h3><p>The model arcitecture consists of five CNN layers followed two fully-connected - FC - layers. The parameters of the CNN model is selected and tuned such that it becomes smallet as it goes deeper, i.e. more feature depths but smaller layers. The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.</p>
+<h3 id="Design-and-Test-a-Model-Architecture">Design and Test a Model Architecture<a class="anchor-link" href="#Design-and-Test-a-Model-Architecture">&#182;</a></h3><p>The model arcitecture consists of six CNN layers followed by two fully-connected - FC - layers. The number of parameters of the CNN layers model are tuned such that the feature depth increases as we move deeper and the output layer becomes smaller (see fig. below)</p>
+<p><img src="Images/lenet.png" alt="LeNet"></p>
+<p>For this project, feature depths of the CNN layers are 3 - for image inputs, 16, 32, 32, 64, 64, and 128). The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.</p>
 <p>For the FC layers, dropout appraoch is used to prevent overfitting.</p>
 <h3 id="Results-and-Discussions">Results and Discussions<a class="anchor-link" href="#Results-and-Discussions">&#182;</a></h3><ul>
 <li><strong>Before Data Augmentation</strong>:<br>
