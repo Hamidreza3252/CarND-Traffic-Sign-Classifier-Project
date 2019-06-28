@@ -2,21 +2,21 @@
 
 ### Overview  
 
-In this project, I train train and validate a CNN model to classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). Below are the following steps of the pipeline that I have developed:  
+In this project, I train a CNN model to classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). Below I discuss about the general steps of the pipeline:  
 
-- Loading the provided raw data, **trainin**, **validation**, and **test** data sets. 
-- exploring the raw data, data set size for each category, visualizing, and identifying how it can be pre=-processed to improve model performance in general 
-- Applying the modifications to the images and storing the processed data to be loaded for the next runs 
-- Defining the CNN model and finetuning hyper-parameters  
-- Test and visualize the performance on provided (and processed) **test** data set 
-- Visualize itermediate layers' output 
+- Loading the provided raw data, **training**, **validation**, and **test** data sets. 
+- exploring the raw data, by checking the size for each category, visualizing, and pre-processing the raw-data to improve model performance in general.  
+- Modifying/Processing the raw images and storing the processed ones in associated pickle files, so that they can be reloaded for next trial runs, as needed.  
+- Defining the CNN model and finetuning the hyper-parameters to get the best performance, a trade-off between accuracy and speed is also important.  
+- Test and visualize the performance on the **test** data set.  
+- Visualize itermediate layers' outputs.  
 
-> **Note**: `Cnn` wrapper class is created alongside this jupyter notebook for better code review and readability. In a sense, it is similar to `Keras` library, but of course a lot more limited functionality, just to cover the requirements of this project.  
+> **Note**: `Cnn` wrapper class is created alongside this jupyter notebook for better code review and readability. The concept is similar to that os `Keras` library, but of course supporting a lot more limited functionalities, just to cover the requirements of this project.  
 
-### 1. Laoding and exploring the provided raw data  
+### Laoding and exploring the provided raw data  
 
 - **Whitenning Images**:  
-    While exploring the raw data, I noticed several images that were dark, not really highlighting the features that the CNN could clearly capture. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as input and slightly enlighten - or whiten - it with respect to its own average RGB values. That can also be performed on HLS space, increasing the light component. But that has worked well for now. Below you can see some examples of the images before and after whitening.  
+    While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  
 
 Before Whitenning             |  After Whitenning
 :-------------------------:|:-------------------------:
@@ -28,16 +28,17 @@ Before Whitenning             |  After Whitenning
 
 ***
 > **Note**:
-There are couple of other appraoches proposed in literatures for image whitenning that I tried, but they did not work as expected. One of them that I already tried is called **Zero Components Analysis** or **ZCA** for short. I think this method requires some basic requirements of training data set that are not met here. After exploring some of the whitenned images, the results were so deviated from the original image that one could not identify the original image. But it is still worth exploring... future work  
+There are couple of other appraoches proposed in some literatures for image whitenning that I tried them, but they did not work as expected for me. One of them, that I already tried, is called **Zero Components Analysis** or **ZCA** for short. I think this a great method but it requires more careful considerations for the training dataset. For example, after exploring some of the images whitenned using ZCA, the results were so deviated from the original image that I could not identify what the original image was. But it is still worth exploring and I would work on it in a future work attempt.  
 - [LINK-1: Preprocessing for deep learning: from covariance matrix to image whitening](https://hadrienj.github.io/posts/Preprocessing-for-deep-learning/)
 - [LINK-2: Preprocessing for deep learning: from covariance matrix to image whitening](https://www.freecodecamp.org/news/preprocessing-for-deep-learning-from-covariance-matrix-to-image-whitening-9e2b9c75165c/)  
-There are also some general useful guidelines that I followed, such as the link below: 
+
+  In addition, there are also some general useful guidelines that I followed for data pre-processing, such as the guidelines suggested in the link below:  
 - [Image Pre-processing for Deep Learning](https://towardsdatascience.com/image-pre-processing-c1aec0be3edf) 
 
   
 
 - **Data Augmentation**:  
-    It is observed that the provided raw data does not have enough data for some categories. More importantly, some features have significantly more data than ohers. Here is the distribution of number of images of each category:  
+    Why is it required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category:  
     
     `features_counts: [ 180 1980 2010 1260 1770 1650  360 1290 1260 1320 1800 1170 1890 1920 690  540  360  990 1080  180  300  270  330 450  240 1350  540  210 480  240  390  690  210  599  360 1080  330  180 1860  270  300  210 210]`
     

@@ -20,8 +20,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classificationModules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="279" column="43" selection-start-line="279" selection-start-column="43" selection-end-line="279" selection-end-column="43" />
+            <state relative-caret-position="490">
+              <caret line="830" column="49" selection-start-line="830" selection-start-column="49" selection-end-line="830" selection-end-column="49" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -51,6 +51,8 @@
       <find>batch_features_labels</find>
       <find>print_sta</find>
       <find>conv</find>
+      <find>axis</find>
+      <find>axis.</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -74,6 +76,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -85,7 +88,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -120,10 +122,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13224447" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11696658" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -147,8 +149,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/classificationModules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="279" column="43" selection-start-line="279" selection-start-column="43" selection-end-line="279" selection-end-column="43" />
+        <state relative-caret-position="490">
+          <caret line="830" column="49" selection-start-line="830" selection-start-column="49" selection-end-line="830" selection-end-column="49" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>

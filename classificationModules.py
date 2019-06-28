@@ -821,11 +821,14 @@ class Cnn:
         ticklabels = axis.get_xticklabels() + axis.get_yticklabels()
 
         for line in gridlines:
-            line.set_linestyle('-.')
+            line.set_linestyle("-.")
 
         for label in ticklabels:
             label.set_color("b")
             label.set_fontsize(13)
+
+        axis.set_xlabel("FPR", fontsize="x-large")
+        axis.set_ylabel("TPR", fontsize="x-large")
 
         axis.grid(b=True, which="both", alpha=1.0)
 
