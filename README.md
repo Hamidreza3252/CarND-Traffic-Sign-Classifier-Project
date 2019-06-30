@@ -1,6 +1,6 @@
-## Building a Traffic Sign Recognition Classifier, Deep Learning Approach 
+# Building a Traffic Sign Recognition Classifier, Deep Learning Approach 
 
-### Overview  
+## 1. Overview  
 
 In this project, I train a CNN model to classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). Below I discuss about the general steps of the pipeline:  
 
@@ -13,56 +13,69 @@ In this project, I train a CNN model to classify traffic sign images using the [
 
 > **Note**: `Cnn` wrapper class is created alongside this jupyter notebook for better code review and readability. The concept is similar to that os `Keras` library, but of course supporting a lot more limited functionalities, just to cover the requirements of this project.  
 
-### Dataset Exploration and Pre-Processing  
+## 2. Basic summary of the data set  
+
+### Sample size of each category  
 
 This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set). 
 
-Class ID                      |  Description    |    Original Dataset Size   |   Augmented and Pre-Processed Dataset Size
-:----------------------------:|:---------------:|:--------------------------:|:------------------------------------------:
-0  |    Speed limit (20km/h)                                 |  180    |   1440
-1  |    Speed limit (30km/h)                                 |  1980   |   1440
-2  |    Speed limit (50km/h)                                 |  2010   |   1440
-3  |    Speed limit (60km/h)                                 |  1260   |   1440
-4  |    Speed limit (70km/h)                                 |  1770   |   1440
-5  |    Speed limit (80km/h)                                 |  1650   |   1440
-6  |    End of speed limit (80km/h)                          |  360    |   1440
-7  |    Speed limit (100km/h)                                |  1290   |   1440
-8  |    Speed limit (120km/h)                                |  1260   |   1440
-9  |    No passing                                           |  1320   |   1440
-10 |    No passing for vehicles over 3.5 metric tons         |  1800   |   1440
-11 |    Right-of-way at the next intersection                |  1170   |   1440
-12 |    Priority road                                        |  1890   |   1440
-13 |    Yield                                                |  1920   |   1440
-14 |    Stop                                                 |  690    |   1440
-15 |    No vehicles                                          |  540    |   1440
-16 |    Vehicles over 3.5 metric tons prohibited             |  360    |   1440
-17 |    No entry                                             |  990    |   1440
-18 |    General caution                                      |  1080   |   1440
-19 |    Dangerous curve to the left                          |  180    |   1440
-20 |    Dangerous curve to the right                         |  300    |   1440
-21 |    Double curve                                         |  270    |   1440
-22 |    Bumpy road                                           |  330    |   1440
-23 |    Slippery road                                        |  450    |   1440
-24 |    Road narrows on the right                            |  240    |   1440
-25 |    Road work                                            |  1350   |   1440
-26 |    Traffic signals                                      |  540    |   1440
-27 |    Pedestrians                                          |  210    |   1440
-28 |    Children crossing                                    |  480    |   1440
-29 |    Bicycles crossing                                    |  240    |   1440
-30 |    Beware of ice/snow                                   |  390    |   1440
-31 |    Wild animals crossing                                |  690    |   1440
-32 |    End of all speed and passing limits                  |  210    |   1440
-33 |    Turn right ahead                                     |  599    |   1440
-34 |    Turn left ahead                                      |  360    |   1440
-35 |    Ahead only                                           |  1080   |   1440
-36 |    Go straight or right                                 |  330    |   1440
-37 |    Go straight or left                                  |  180    |   1440
-38 |    Keep right                                           |  1860   |   1440
-39 |    Keep left                                            |  270    |   1440
-40 |    Roundabout mandatory                                 |  300    |   1440
-41 |    End of no passing                                    |  210    |   1440
-42 |    End of no passing by vehicles over 3.5 metric tons   |  210    |   1440
+Class ID  |  Description                                     |  Original Training Dataset Size  |  Validation Dataset Size  |  Test Dataset Size  |  Augmented Training Dataset Size  |  
+:--:|:------------------------------------------------------:|:--------------------------------:|:-------------------------:|:-------------------:|:----------------------------------:
+0  |    Speed limit (20km/h)                                 |  180                             |  30                       |  60                 |  1440
+1  |    Speed limit (30km/h)                                 |  1980                            |  240                      |  720                |  1440
+2  |    Speed limit (50km/h)                                 |  2010                            |  240                      |  750                |  1440
+3  |    Speed limit (60km/h)                                 |  1260                            |  150                      |  450                |  1440
+4  |    Speed limit (70km/h)                                 |  1770                            |  210                      |  660                |  1440
+5  |    Speed limit (80km/h)                                 |  1650                            |  210                      |  630                |  1440
+6  |    End of speed limit (80km/h)                          |  360                             |  60                       |  150                |  1440
+7  |    Speed limit (100km/h)                                |  1290                            |  150                      |  450                |  1440
+8  |    Speed limit (120km/h)                                |  1260                            |  150                      |  450                |  1440
+9  |    No passing                                           |  1320                            |  150                      |  480                |  1440
+10 |    No passing for vehicles over 3.5 metric tons         |  1800                            |  210                      |  660                |  1440
+11 |    Right-of-way at the next intersection                |  1170                            |  150                      |  420                |  1440
+12 |    Priority road                                        |  1890                            |  210                      |  690                |  1440
+13 |    Yield                                                |  1920                            |  240                      |  720                |  1440
+14 |    Stop                                                 |  690                             |  90                       |  270                |  1440
+15 |    No vehicles                                          |  540                             |  90                       |  210                |  1440
+16 |    Vehicles over 3.5 metric tons prohibited             |  360                             |  60                       |  150                |  1440
+17 |    No entry                                             |  990                             |  120                      |  360                |  1440
+18 |    General caution                                      |  1080                            |  120                      |  390                |  1440
+19 |    Dangerous curve to the left                          |  180                             |  30                       |  60                 |  1440
+20 |    Dangerous curve to the right                         |  300                             |  60                       |  90                 |  1440
+21 |    Double curve                                         |  270                             |  60                       |  90                 |  1440
+22 |    Bumpy road                                           |  330                             |  60                       |  120                |  1440
+23 |    Slippery road                                        |  450                             |  60                       |  150                |  1440
+24 |    Road narrows on the right                            |  240                             |  30                       |  90                 |  1440
+25 |    Road work                                            |  1350                            |  150                      |  480                |  1440
+26 |    Traffic signals                                      |  540                             |  60                       |  180                |  1440
+27 |    Pedestrians                                          |  210                             |  30                       |  60                 |  1440
+28 |    Children crossing                                    |  480                             |  60                       |  150                |  1440
+29 |    Bicycles crossing                                    |  240                             |  30                       |  90                 |  1440
+30 |    Beware of ice/snow                                   |  390                             |  60                       |  150                |  1440
+31 |    Wild animals crossing                                |  690                             |  90                       |  270                |  1440
+32 |    End of all speed and passing limits                  |  210                             |  30                       |  60                 |  1440
+33 |    Turn right ahead                                     |  599                             |  90                       |  210                |  1440
+34 |    Turn left ahead                                      |  360                             |  60                       |  120                |  1440
+35 |    Ahead only                                           |  1080                            |  120                      |  390                |  1440
+36 |    Go straight or right                                 |  330                             |  60                       |  120                |  1440
+37 |    Go straight or left                                  |  180                             |  30                       |  60                 |  1440
+38 |    Keep right                                           |  1860                            |  210                      |  690                |  1440
+39 |    Keep left                                            |  270                             |  30                       |  90                 |  1440
+40 |    Roundabout mandatory                                 |  300                             |  60                       |  90                 |  1440
+41 |    End of no passing                                    |  210                             |  30                       |  60                 |  1440
+42 |    End of no passing by vehicles over 3.5 metric tons   |  210                             |  30                       |  90                 |  1440
 
+![Sample Sizes Distribution](Images/sample-distribution-01.png)
+
+### Sample images before processing  
+
+Label                      |  Image
+:-------------------------:|:-------------------------:
+31- Wild animals crossing  |  ![Sample Image](Images/explore-sample-01-31.png)  
+41- End of no passing      |  ![After](Images/explore-sample-02-41.png)  
+36- Go straight or right   |  ![After](Images/explore-sample-03-36.png)  
+26- Traffic signals        |  ![After](Images/explore-sample-04-26.png)  
+23- Slippery road          |  ![After](Images/explore-sample-05-23.png)  
 
 - **Pre-processing rwa data images via applying a whitenning algorithm:**  
     While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  
