@@ -15,12 +15,12 @@ In this project, I train a CNN model to classify traffic sign images using the [
 
 ## 2. Basic summary of the data set  
 
-### Sample size of each category  
+- **Sample size of each category**  
 
 This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set). 
 
-Class ID  |  Description                                     |  Original Training Dataset Size  |  Validation Dataset Size  |  Test Dataset Size  |  Augmented Training Dataset Size  |  
-:--:|:------------------------------------------------------:|:--------------------------------:|:-------------------------:|:-------------------:|:----------------------------------:
+|Class ID  |  Description          |  Original Training Dataset Size  |  Validation Dataset Size  |  Test Dataset Size  |  Augmented Training Dataset Size  |  
+|:--:|:---------------------------:|:--------------------------------:|:-------------------------:|:-------------------:|:-------------:
 0  |    Speed limit (20km/h)                                 |  180                             |  30                       |  60                 |  1440
 1  |    Speed limit (30km/h)                                 |  1980                            |  240                      |  720                |  1440
 2  |    Speed limit (50km/h)                                 |  2010                            |  240                      |  750                |  1440
@@ -67,24 +67,14 @@ Class ID  |  Description                                     |  Original Trainin
 
 ![Sample Sizes Distribution](Images/sample-distribution-01.png)
 
-### Sample images before processing  
+- **Sample images before and after processing (whitenning)**  
 
-Label                      |  Image
-:-------------------------:|:-------------------------:
-31- Wild animals crossing  |  ![Sample Image](Images/explore-sample-01-31.png)  
-41- End of no passing      |  ![After](Images/explore-sample-02-41.png)  
-36- Go straight or right   |  ![After](Images/explore-sample-03-36.png)  
-26- Traffic signals        |  ![After](Images/explore-sample-04-26.png)  
-23- Slippery road          |  ![After](Images/explore-sample-05-23.png)  
+    While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening for each category.  
 
-- **Pre-processing rwa data images via applying a whitenning algorithm:**  
-    While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  
 
-Before Whitenning          |  After Whitenning
-:-------------------------:|:-------------------------:
-![Before](Images/sample-01-d.png)  |  ![After](Images/sample-01.png)  
-![Before](Images/sample-02-d.png)  |  ![After](Images/sample-02.png)  
-![Before](Images/sample-03-d.png)  |  ![After](Images/sample-03.png)  
+Raw Images          | ----- |  Processed (whitenned) Images 
+:------------------:| :---: |:------------------:
+![Sample Image](Images/selected-images-01.png) | ---  |  ![Sample Image](Images/selected-images-whitenned-01.png)  
 
 ***
 > **Note**:
