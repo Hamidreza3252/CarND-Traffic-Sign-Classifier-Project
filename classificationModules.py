@@ -786,7 +786,7 @@ class Cnn:
 
             axis[1].barh(ind + margin, pred_values[::-1][-n_classes:], width)
             axis[1].set_yticks(ind + margin)
-            axis[1].set_yticklabels(pred_label_names[:n_classes]) # [::-1])
+            axis[1].set_yticklabels(pred_label_names[:n_classes][::-1])
             # axis[1].set_yticklabels(pred_label_name)
             axis[1].set_title("predicted: " + pred_label_name)
             axis[1].set_xticks([0, 0.5, 1.0])
