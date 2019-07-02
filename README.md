@@ -74,7 +74,7 @@ This traffic sign dbase consists of 43 caegories as listed below. The original d
 Below you can see some examples of the images before and after whitening for each category.
 
 
-Raw Images          | --- |  Processed (whitenned) Images  
+Raw Training Images          | --- |  Processed (whitenned) Training Images  
 :------------------:| :---: |:------------------:
 ![Sample Image](Images/selected-images-01.png) | ---  |  ![Sample Image](Images/selected-images-whitenned-01.png)  
 
@@ -207,11 +207,34 @@ After going through 100 iterations on the training data batches - `epochs = 100`
 
 As explained above, all the images I used for training, validation, and test purposes are already whitenned, based on the algorithm explained above. The overall summary of statistics of selected test images are listed below for all categories.  
 
-Raw Images          | --- |  Processed (whitenned) Images  
+Raw Test Images  | --- |  Processed (whitenned) Test Images  
 :------------------:| :---: |:------------------:
 ![Sample Image](Images/selected-test-images-01.png) | ---  |  ![Sample Image](Images/selected-test-images-whitenned-01.png)  
 
-### 3-3. Potential Areas of Improvement  
+### 3-3. Testing the performance  
+
+In this section I provide the following briefly: 
+
+- Measuring the model performance by plotting ROC - AUC curve  
+- Visualizing the first top-five scored predictions of 10 samples, picked from test dataset. Tensorflow provides function `tf.nn.top_k` that can sort the scores of the output layer predictions - softmax in this project. 
+
+Performance |  
+:------------------:|  
+![ROC-AUC](Images/roc-auc-01.png) | 
+:------------------:|  
+![Softmax Predictions](Images/softmax-01.png)  
+
+
+### 3-4. Visualize the Neural Network's State with Test Images  
+
+Visualization  |  
+:------------------:|  
+![Selected Input](Images/layers-output-input-01.png) | 
+:------------------:|  
+![Layer Output](Images/layers-output-01.png)  
+
+
+### 3-5. Potential Areas of Improvement  
 
 I can think of couple of improvement areas that I would like to explore. 
 

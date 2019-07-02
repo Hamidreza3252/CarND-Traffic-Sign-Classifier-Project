@@ -13089,7 +13089,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -13149,7 +13149,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Building-a-Traffic-Sign-Recognition-Classifier,-Deep-Learning-Approach">Building a Traffic Sign Recognition Classifier, Deep Learning Approach<a class="anchor-link" href="#Building-a-Traffic-Sign-Recognition-Classifier,-Deep-Learning-Approach">&#182;</a></h2><h3 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h3><p>In this project, I train a CNN model to classify traffic sign images using the <a href="http://benchmark.ini.rub.de/?section=gtsrb&amp;subsection=dataset">German Traffic Sign Dataset</a>. Below I discuss about the general steps of the pipeline:</p>
+<h1 id="Building-a-Traffic-Sign-Recognition-Classifier,-Deep-Learning-Approach">Building a Traffic Sign Recognition Classifier, Deep Learning Approach<a class="anchor-link" href="#Building-a-Traffic-Sign-Recognition-Classifier,-Deep-Learning-Approach">&#182;</a></h1><h2 id="1.-Overview">1. Overview<a class="anchor-link" href="#1.-Overview">&#182;</a></h2><p>In this project, I train a CNN model to classify traffic sign images using the <a href="http://benchmark.ini.rub.de/?section=gtsrb&amp;subsection=dataset">German Traffic Sign Dataset</a>. Below I discuss about the general steps of the pipeline:</p>
 <ul>
 <li>Loading the provided raw data, <strong>training</strong>, <strong>validation</strong>, and <strong>test</strong> data sets. </li>
 <li>exploring the raw data, by checking the size for each category, visualizing, and pre-processing the raw-data to improve model performance in general.  </li>
@@ -13160,301 +13160,88 @@ div#notebook {
 </ul>
 <blockquote><p><strong>Note</strong>: <code>Cnn</code> wrapper class is created alongside this jupyter notebook for better code review and readability. The concept is similar to that os <code>Keras</code> library, but of course supporting a lot more limited functionalities, just to cover the requirements of this project.</p>
 </blockquote>
-<h3 id="Dataset-Exploration-and-Pre-Processing">Dataset Exploration and Pre-Processing<a class="anchor-link" href="#Dataset-Exploration-and-Pre-Processing">&#182;</a></h3><p>This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set).</p>
+<h2 id="2.-Basic-summary-of-the-data-set">2. Basic summary of the data set<a class="anchor-link" href="#2.-Basic-summary-of-the-data-set">&#182;</a></h2><h3 id="2-1.-Sample-size-of-each-category">2-1. Sample size of each category<a class="anchor-link" href="#2-1.-Sample-size-of-each-category">&#182;</a></h3><p>This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set).</p>
 <table>
 <thead><tr>
 <th style="text-align:center">Class ID</th>
 <th style="text-align:center">Description</th>
-<th style="text-align:center">Original Dataset Size</th>
-<th style="text-align:center">Augmented and Pre-Processed Dataset Size</th>
+<th style="text-align:center">Original Training Dataset Size</th>
+<th style="text-align:center">Validation Dataset Size</th>
+<th style="text-align:center">Test Dataset Size</th>
+<th style="text-align:center">Augmented Training Dataset Size</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">0</td>
-<td style="text-align:center">Speed limit (20km/h)</td>
-<td style="text-align:center">180</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">Speed limit (30km/h)</td>
-<td style="text-align:center">1980</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">Speed limit (50km/h)</td>
-<td style="text-align:center">2010</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">Speed limit (60km/h)</td>
-<td style="text-align:center">1260</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">Speed limit (70km/h)</td>
-<td style="text-align:center">1770</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">5</td>
-<td style="text-align:center">Speed limit (80km/h)</td>
-<td style="text-align:center">1650</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">6</td>
-<td style="text-align:center">End of speed limit (80km/h)</td>
-<td style="text-align:center">360</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">7</td>
-<td style="text-align:center">Speed limit (100km/h)</td>
-<td style="text-align:center">1290</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">8</td>
-<td style="text-align:center">Speed limit (120km/h)</td>
-<td style="text-align:center">1260</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">9</td>
-<td style="text-align:center">No passing</td>
-<td style="text-align:center">1320</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">10</td>
-<td style="text-align:center">No passing for vehicles over 3.5 metric tons</td>
-<td style="text-align:center">1800</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">11</td>
-<td style="text-align:center">Right-of-way at the next intersection</td>
-<td style="text-align:center">1170</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">12</td>
-<td style="text-align:center">Priority road</td>
-<td style="text-align:center">1890</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">13</td>
-<td style="text-align:center">Yield</td>
-<td style="text-align:center">1920</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">14</td>
-<td style="text-align:center">Stop</td>
-<td style="text-align:center">690</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">15</td>
-<td style="text-align:center">No vehicles</td>
-<td style="text-align:center">540</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">16</td>
-<td style="text-align:center">Vehicles over 3.5 metric tons prohibited</td>
-<td style="text-align:center">360</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">17</td>
-<td style="text-align:center">No entry</td>
-<td style="text-align:center">990</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">18</td>
-<td style="text-align:center">General caution</td>
-<td style="text-align:center">1080</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">19</td>
-<td style="text-align:center">Dangerous curve to the left</td>
-<td style="text-align:center">180</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">20</td>
-<td style="text-align:center">Dangerous curve to the right</td>
-<td style="text-align:center">300</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">21</td>
-<td style="text-align:center">Double curve</td>
-<td style="text-align:center">270</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">22</td>
-<td style="text-align:center">Bumpy road</td>
-<td style="text-align:center">330</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">23</td>
-<td style="text-align:center">Slippery road</td>
-<td style="text-align:center">450</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">24</td>
-<td style="text-align:center">Road narrows on the right</td>
-<td style="text-align:center">240</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">25</td>
-<td style="text-align:center">Road work</td>
-<td style="text-align:center">1350</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">26</td>
-<td style="text-align:center">Traffic signals</td>
-<td style="text-align:center">540</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">27</td>
-<td style="text-align:center">Pedestrians</td>
-<td style="text-align:center">210</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">28</td>
-<td style="text-align:center">Children crossing</td>
-<td style="text-align:center">480</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">29</td>
-<td style="text-align:center">Bicycles crossing</td>
-<td style="text-align:center">240</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">30</td>
-<td style="text-align:center">Beware of ice/snow</td>
-<td style="text-align:center">390</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">31</td>
-<td style="text-align:center">Wild animals crossing</td>
-<td style="text-align:center">690</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">32</td>
-<td style="text-align:center">End of all speed and passing limits</td>
-<td style="text-align:center">210</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">33</td>
-<td style="text-align:center">Turn right ahead</td>
-<td style="text-align:center">599</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">34</td>
-<td style="text-align:center">Turn left ahead</td>
-<td style="text-align:center">360</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">35</td>
-<td style="text-align:center">Ahead only</td>
-<td style="text-align:center">1080</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">36</td>
-<td style="text-align:center">Go straight or right</td>
-<td style="text-align:center">330</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">37</td>
-<td style="text-align:center">Go straight or left</td>
-<td style="text-align:center">180</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">38</td>
-<td style="text-align:center">Keep right</td>
-<td style="text-align:center">1860</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">39</td>
-<td style="text-align:center">Keep left</td>
-<td style="text-align:center">270</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">40</td>
-<td style="text-align:center">Roundabout mandatory</td>
-<td style="text-align:center">300</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">41</td>
-<td style="text-align:center">End of no passing</td>
-<td style="text-align:center">210</td>
-<td style="text-align:center">1440</td>
-</tr>
-<tr>
-<td style="text-align:center">42</td>
-<td style="text-align:center">End of no passing by vehicles over 3.5 metric tons</td>
-<td style="text-align:center">210</td>
-<td style="text-align:center">1440</td>
+<td style="text-align:center"></td>
 </tr>
 </tbody>
 </table>
-<ul>
-<li><strong>Pre-processing rwa data images via applying a whitenning algorithm:</strong><br>
-  While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function <code>Cnn.whiten_images_self_mean</code> that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening.  </li>
-</ul>
+<p>0  |    Speed limit (20km/h)                                 |  180                             |  30                       |  60                 |  1440
+1  |    Speed limit (30km/h)                                 |  1980                            |  240                      |  720                |  1440
+2  |    Speed limit (50km/h)                                 |  2010                            |  240                      |  750                |  1440
+3  |    Speed limit (60km/h)                                 |  1260                            |  150                      |  450                |  1440
+4  |    Speed limit (70km/h)                                 |  1770                            |  210                      |  660                |  1440
+5  |    Speed limit (80km/h)                                 |  1650                            |  210                      |  630                |  1440
+6  |    End of speed limit (80km/h)                          |  360                             |  60                       |  150                |  1440
+7  |    Speed limit (100km/h)                                |  1290                            |  150                      |  450                |  1440
+8  |    Speed limit (120km/h)                                |  1260                            |  150                      |  450                |  1440
+9  |    No passing                                           |  1320                            |  150                      |  480                |  1440
+10 |    No passing for vehicles over 3.5 metric tons         |  1800                            |  210                      |  660                |  1440
+11 |    Right-of-way at the next intersection                |  1170                            |  150                      |  420                |  1440
+12 |    Priority road                                        |  1890                            |  210                      |  690                |  1440
+13 |    Yield                                                |  1920                            |  240                      |  720                |  1440
+14 |    Stop                                                 |  690                             |  90                       |  270                |  1440
+15 |    No vehicles                                          |  540                             |  90                       |  210                |  1440
+16 |    Vehicles over 3.5 metric tons prohibited             |  360                             |  60                       |  150                |  1440
+17 |    No entry                                             |  990                             |  120                      |  360                |  1440
+18 |    General caution                                      |  1080                            |  120                      |  390                |  1440
+19 |    Dangerous curve to the left                          |  180                             |  30                       |  60                 |  1440
+20 |    Dangerous curve to the right                         |  300                             |  60                       |  90                 |  1440
+21 |    Double curve                                         |  270                             |  60                       |  90                 |  1440
+22 |    Bumpy road                                           |  330                             |  60                       |  120                |  1440
+23 |    Slippery road                                        |  450                             |  60                       |  150                |  1440
+24 |    Road narrows on the right                            |  240                             |  30                       |  90                 |  1440
+25 |    Road work                                            |  1350                            |  150                      |  480                |  1440
+26 |    Traffic signals                                      |  540                             |  60                       |  180                |  1440
+27 |    Pedestrians                                          |  210                             |  30                       |  60                 |  1440
+28 |    Children crossing                                    |  480                             |  60                       |  150                |  1440
+29 |    Bicycles crossing                                    |  240                             |  30                       |  90                 |  1440
+30 |    Beware of ice/snow                                   |  390                             |  60                       |  150                |  1440
+31 |    Wild animals crossing                                |  690                             |  90                       |  270                |  1440
+32 |    End of all speed and passing limits                  |  210                             |  30                       |  60                 |  1440
+33 |    Turn right ahead                                     |  599                             |  90                       |  210                |  1440
+34 |    Turn left ahead                                      |  360                             |  60                       |  120                |  1440
+35 |    Ahead only                                           |  1080                            |  120                      |  390                |  1440
+36 |    Go straight or right                                 |  330                             |  60                       |  120                |  1440
+37 |    Go straight or left                                  |  180                             |  30                       |  60                 |  1440
+38 |    Keep right                                           |  1860                            |  210                      |  690                |  1440
+39 |    Keep left                                            |  270                             |  30                       |  90                 |  1440
+40 |    Roundabout mandatory                                 |  300                             |  60                       |  90                 |  1440
+41 |    End of no passing                                    |  210                             |  30                       |  60                 |  1440
+42 |    End of no passing by vehicles over 3.5 metric tons   |  210                             |  30                       |  90                 |  1440</p>
+<p><img src="Images/sample-distribution-01.png" alt="Sample Sizes Distribution"></p>
+<h3 id="2-2.-Sample-images-before-and-after-processing-(whitenning)">2-2. Sample images before and after processing (whitenning)<a class="anchor-link" href="#2-2.-Sample-images-before-and-after-processing-(whitenning)">&#182;</a></h3>
+<pre><code>While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. In addition, there are also some general useful guidelines that I followed for data pre-processing, such as the guidelines suggested in the following link: [Image Pre-processing for Deep Learning](https://towardsdatascience.com/image-pre-processing-c1aec0be3edf).   
+
+</code></pre>
+<p>Below you can see some examples of the images before and after whitening for each category.</p>
 <table>
 <thead><tr>
-<th style="text-align:center">Before Whitenning</th>
-<th style="text-align:center">After Whitenning</th>
+<th style="text-align:center">Raw Training Images</th>
+<th style="text-align:center">---</th>
+<th style="text-align:center">Processed (whitenned) Training Images  </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><img src="Images/sample-01-d.png" alt="Before"></td>
-<td style="text-align:center"><img src="Images/sample-01.png" alt="After">  </td>
-</tr>
-<tr>
-<td style="text-align:center"><img src="Images/sample-02-d.png" alt="Before"></td>
-<td style="text-align:center"><img src="Images/sample-02.png" alt="After">  </td>
-</tr>
-<tr>
-<td style="text-align:center"><img src="Images/sample-03-d.png" alt="Before"></td>
-<td style="text-align:center"><img src="Images/sample-03.png" alt="After">  </td>
+<td style="text-align:center"><img src="Images/selected-images-01.png" alt="Sample Image"></td>
+<td style="text-align:center">---</td>
+<td style="text-align:center"><img src="Images/selected-images-whitenned-01.png" alt="Sample Image">  </td>
 </tr>
 </tbody>
 </table>
+<p>It should be noted that while processing the raw images, I define a rectangle of interest by introducing left, right, top, and bottom offsets, outside which I fill the image with zero padding. This helped get better whitenned images by removing some boundary background noises that are not part of the features to be captures. This also helps remove some of the secondary signs that may be present beside the main traffic sign.</p>
 <hr>
 <blockquote><p><strong>Note</strong>:
 There are couple of other appraoches proposed in some literatures for image whitenning that I tried them, but they did not work as expected for me. One of them, that I already tried, is called <strong>Zero Components Analysis</strong> or <strong>ZCA</strong> for short. I think this a great method but it requires more careful considerations for the training dataset. For example, after exploring some of the images whitenned using ZCA, the results were so deviated from the original image that I could not identify what the original image was. But it is still worth exploring and I would work on it in a future work attempt.</p>
@@ -13463,31 +13250,115 @@ There are couple of other appraoches proposed in some literatures for image whit
 <li><a href="https://www.freecodecamp.org/news/preprocessing-for-deep-learning-from-covariance-matrix-to-image-whitening-9e2b9c75165c/">LINK-2: Preprocessing for deep learning: from covariance matrix to image whitening</a>  </li>
 </ul>
 </blockquote>
-<p>In addition, there are also some general useful guidelines that I followed for data pre-processing, such as the guidelines suggested in the link below:</p>
+<h3 id="2-3.-Data-Augmentation---generating-fake-training-data">2-3. Data Augmentation - generating fake training data<a class="anchor-link" href="#2-3.-Data-Augmentation---generating-fake-training-data">&#182;</a></h3><p><strong>Why is 'data augmentation' required?</strong></p>
+<p>After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category (from column <strong>'Original Dataset Size'</strong> of  above table):</p>
+
+<pre><code>`features_counts: [ 180 1980 2010 1260 1770 1650  360 1290 1260 1320 1800 1170 1890 1920 690  540  360  990 1080  180  300  270  330 450  240 1350  540  210 480  240  390  690  210  599  360 1080  330  180 1860  270  300  210 210]`
+
+So it is needed to augment the data in a logical way. My simple approach is to generate some fake images of each category by applying slight noises. Function `Cnn.augment_data` is created to perform this job. After data augmentation, equal sample size of each category is selected form the post-processed and augmented data and the results are saved into the `traffic-signs-data` directory for future uses. 
+
+&gt; **Note**: This task needs to be run only once, therefore for future runs, the post-processed data will be loaded for training, validation, and test steps. 
+
+After training-data augmentation process, each category will have enough number of data as follows. 
+
+`features_counts: [1440, 3240, 3270, 2520, 3030, 2910, 1620, 2550, 2520, 2580, 3060, 2430, 3150, 3180, 1950, 1800, 1620, 2250, 2340, 1440, 1560, 1530, 1590, 1710, 1500, 2610, 1800, 1470, 1740, 1500, 1650, 1950, 1470, 1859, 1620, 2340, 1590, 1440, 3120, 1530, 1560, 1470, 1470]`  
+
+However, the training data is loaded such that each category has equal sample size as follows (from column **'Augmented and Pre-Processed Dataset Size'** of  above table):  
+
+`features_counts: [1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440]`  
+
+
+</code></pre>
+<h2 id="3.-Design-and-Test-a-Model-Architecture">3. Design and Test a Model Architecture<a class="anchor-link" href="#3.-Design-and-Test-a-Model-Architecture">&#182;</a></h2><p>After trying to put a few layers, I decided to use six CNN layers followed by two fully-connected - FC - layers. In general, the overal architecture is very similar to that of LeNet as shown below:</p>
+<p><img src="Images/lenet.png" alt="LeNet"></p>
+<p>For this project, the architecture contains the following features (3 channels for the zeroth layer, considering RGB channels of the image inputs):</p>
 <ul>
-<li><a href="https://towardsdatascience.com/image-pre-processing-c1aec0be3edf">Image Pre-processing for Deep Learning</a> </li>
+<li><p><strong>Conv. Layer-1</strong>:</p>
+<ul>
+<li>layet depth=16</li>
+<li>kernel size=(8, 8)</li>
+<li>output layer size: (?, 24, 24, 16)</li>
+<li>Batch normalization </li>
+<li>ReLU</li>
+<li>Max pool </li>
 </ul>
+</li>
+<li><p><strong>Conv. Layer-2</strong>:</p>
 <ul>
-<li><p><strong>Data Augmentation - generating fake training data:</strong><br>
-  Why is 'data augmentation' required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category (from column <strong>'Original Dataset Size'</strong> of  above table):</p>
-<p><code>features_counts: [ 180 1980 2010 1260 1770 1650  360 1290 1260 1320 1800 1170 1890 1920 690  540  360  990 1080  180  300  270  330 450  240 1350  540  210 480  240  390  690  210  599  360 1080  330  180 1860  270  300  210 210]</code></p>
-<p>So it is needed to augment the data in a logical way. My simple approach is to generate some fake images of each category by applying slight noises. Function <code>Cnn.augment_data</code> is created to perform this job. After data augmentation, equal sample size of each category is selected form the post-processed and augmented data and the results are saved into the <code>traffic-signs-data</code> directory for future uses.</p>
-<blockquote><p><strong>Note</strong>: This task needs to be run only once, therefore for future runs, the post-processed data will be loaded for training, validation, and test steps.</p>
-</blockquote>
-<p>After training-data augmentation process, each category will have enough number of data as follows.</p>
-<p><code>features_counts: [1440, 3240, 3270, 2520, 3030, 2910, 1620, 2550, 2520, 2580, 3060, 2430, 3150, 3180, 1950, 1800, 1620, 2250, 2340, 1440, 1560, 1530, 1590, 1710, 1500, 2610, 1800, 1470, 1740, 1500, 1650, 1950, 1470, 1859, 1620, 2340, 1590, 1440, 3120, 1530, 1560, 1470, 1470]</code></p>
-<p>However, the training data is loaded such that each category has equal sample size as follows (from column <strong>'Augmented and Pre-Processed Dataset Size'</strong> of  above table):</p>
-<p><code>features_counts: [1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440]</code></p>
+<li>layet depth=32</li>
+<li>kernel size=(5, 5)</li>
+<li>output layer size: (?, 19, 19, 32)</li>
+<li>Batch normalization </li>
+<li>ReLU</li>
+<li>Max pool </li>
+</ul>
+</li>
+<li><p><strong>Conv. Layer-3</strong>:</p>
+<ul>
+<li>layet depth=32</li>
+<li>kernel size=(5, 5)</li>
+<li>output layer size: (?, 14, 14, 32)</li>
+<li>Batch normalization </li>
+<li>ReLU</li>
+<li>Max pool </li>
+</ul>
+</li>
+<li><p><strong>Conv. Layer-4</strong>:</p>
+<ul>
+<li>layet depth=64</li>
+<li>kernel size=(5, 5)</li>
+<li>output layer size: (?, 9, 9, 32)</li>
+<li>Batch normalization </li>
+<li>ReLU</li>
+<li>Max pool </li>
+</ul>
+</li>
+<li><p><strong>Conv. Layer-5</strong>:</p>
+<ul>
+<li>layet depth=64</li>
+<li>kernel size=(5, 5)</li>
+<li>output layer size: (?, 4, 4, 64)</li>
+<li>Batch normalization </li>
+<li>ReLU</li>
+<li>Max pool </li>
+</ul>
+</li>
+<li><p><strong>Conv. Layer-6</strong>:</p>
+<ul>
+<li>layet depth=128</li>
+<li>kernel size=(2, 2)</li>
+<li>output layer size: (?, 2, 2, 128)</li>
+<li>Batch normalization </li>
+<li>ReLU</li>
+<li>Max pool </li>
+</ul>
+</li>
+<li><p><strong>FC Layer-1</strong>:</p>
+<ul>
+<li>number of parameters=128</li>
+</ul>
+</li>
+<li><p><strong>FC Layer-2</strong>:</p>
+<ul>
+<li>number of parameters=64</li>
+</ul>
 </li>
 </ul>
-<h3 id="Design-and-Test-a-Model-Architecture">Design and Test a Model Architecture<a class="anchor-link" href="#Design-and-Test-a-Model-Architecture">&#182;</a></h3><p>The model arcitecture consists of six CNN layers followed by two fully-connected - FC - layers. The number of parameters of the CNN layers model are tuned such that the feature depth increases as we move deeper and the output layer becomes smaller (see fig. below)</p>
-<p><img src="Images/lenet.png" alt="LeNet"></p>
-<p>For this project, feature depths of the CNN layers are 3 - for image inputs, 16, 32, 32, 64, 64, and 128). The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.</p>
-<p>For the FC layers, dropout appraoch is used to prevent overfitting.</p>
-<h3 id="Results-and-Discussions">Results and Discussions<a class="anchor-link" href="#Results-and-Discussions">&#182;</a></h3><ul>
-<li><strong>Before Data Augmentation</strong>:<br>
-  After going through 100 iterations on the training data batches - <code>epochs = 100</code> - the validatoin accuracy of close to <code>89%</code> is achieved - using smaller network. Tracking the training-loss suggets that the model overfit the training data, as the test loss - using the training data - keep decreasing while validation accuracy almost saturates - see the training log below.  </li>
+<h3 id="3-1.-Results-and-Discussions">3-1. Results and Discussions<a class="anchor-link" href="#3-1.-Results-and-Discussions">&#182;</a></h3><p>For testing the model, using original data provided, I used a light model to study learning rate, the training loss and validation accuracy. I used a simple trick to reduce the number of parameters. The trick was to use a single fully-conneected layer to try different parramters. That helped me determine which parameters to be used for the final model architecture.</p>
+<ul>
+<li><p><strong>learning rate</strong>: I initialy set <code>learning_rate = 1.0e-3</code> which is a good value to start with. Then I noticed that training loss fluctuates when the validation accuracy was still not satisfactory. Then I decided to lower it down, <code>learning_rate = 1.0e-4</code>. Adam optimizer would take care of gradually increasing and adapting the learning rate based on the performance of the system.</p>
+</li>
+<li><p><strong>Optimizer</strong>: I used both SGD and Adam optimizers for comparison. In terms of final results the differences are marginal; however, since Adam optimizer uses some internal measures to adapt the learning rate to the performance of the system, it would take less number of efforts to decrease test loss. Therefore, I finally used Adam after comparing the two results.</p>
+</li>
+<li><p><strong>batch size</strong>: I studied both <code>batch_size = 128</code> and <code>batch_size = 512</code> for the light system. Ideally the bigger batch size should perform beter as the gradients would be calculated and back-propagated using the error of the bigger training set data. However, I did not see substantial difference between the final results - very marginal. So I finally chose <code>batch_size = 512</code>.</p>
+</li>
+<li><p><strong>number of iteration over all batches</strong>: For the trial / light model I tried these variabilities: <code>epochs = 30</code>, <code>epochs = 50</code>, and <code>epochs = 100</code>. The system would get to the satisfactory result after 30 iterations more or less and then the validation accuracy starts to fluctuate  while the training loss would keep decreasing. That means overfitting, as the error is calculated and back-propagated by the training loss, instead of vallidation error. However, for the final CNN model architecture, I used <code>epochs = 50</code>, ensuring that the validation accuracy meets and also sperceeds the final project requiremnts.</p>
+</li>
+<li><p><strong>dropout</strong>: I first started with <code>keep_prob = 0.9</code> and then observed that the model did not generalize well and model learned the training data, i.e. the model overfit the training data. By choosing <code>keep_prob = 0.8</code>, I observed that I can still force the validation accuracy would improve at lower training loss, i.e. improving overall model performaance.</p>
+</li>
 </ul>
+<p><strong>Before Data Augmentation</strong></p>
+<p>After going through 100 iterations on the training data batches - <code>epochs = 100</code> - the validatoin accuracy of close to <code>89%</code> is achieved - using smaller network. Tracking the training-loss suggets that the model overfit the training data, as the test loss - using the training data - keep decreasing while validation accuracy almost saturates - see the training log below.</p>
 <p><code>Training... start</code><br>
 <code>Epoch 10: Test Cost: 0.1957 --- Valid Accuracy: 0.8329</code><br>
 <code>Epoch 20: Test Cost: 0.0632 --- Valid Accuracy: 0.8719</code><br>
@@ -13500,16 +13371,77 @@ There are couple of other appraoches proposed in some literatures for image whit
 <code>Epoch 90: Test Cost: 0.0024 --- Valid Accuracy: 0.8791</code><br>
 <code>Epoch 100: Test Cost: 0.0013 --- Valid Accuracy: 0.8871</code><br>
 <code>Training... end</code></p>
+<p><strong>After Data Augmentation</strong>:<br>
+    After going through 50 iterations on the training data batches - <code>epochs = 50</code> - the validatoin accuracy of close to <code>97%</code> is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the <strong>test</strong> data set that is not exposed to the model at all. The overall test accuracy is observed to be <code>95%</code>.</p>
+<h3 id="3-2.-Test-a-Model-on-New-Images">3-2. Test a Model on New Images<a class="anchor-link" href="#3-2.-Test-a-Model-on-New-Images">&#182;</a></h3><p>As explained above, all the images I used for training, validation, and test purposes are already whitenned, based on the algorithm explained above. The overall summary of statistics of selected test images are listed below for all categories.</p>
+<table>
+<thead><tr>
+<th style="text-align:center">Raw Test Images</th>
+<th style="text-align:center">---</th>
+<th style="text-align:center">Processed (whitenned) Test Images  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="Images/selected-test-images-01.png" alt="Sample Image"></td>
+<td style="text-align:center">---</td>
+<td style="text-align:center"><img src="Images/selected-test-images-whitenned-01.png" alt="Sample Image">  </td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-3.-Testing-the-performance">3-3. Testing the performance<a class="anchor-link" href="#3-3.-Testing-the-performance">&#182;</a></h3><p>In this section I provide the following briefly:</p>
 <ul>
-<li><strong>After Data Augmentation</strong>:<br>
-  After going through 50 iterations on the training data batches - <code>epochs = 50</code> - the validatoin accuracy of close to <code>97%</code> is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the <strong>test</strong> data set that is not exposed to the model at all. The overall test accuracy is observed to be <code>95%</code>. </li>
+<li>Measuring the model performance by plotting ROC - AUC curve  </li>
+<li>Visualizing the first top-five scored predictions of 10 samples, picked from test dataset. Tensorflow provides function <code>tf.nn.top_k</code> that can sort the scores of the output layer predictions - softmax in this project. </li>
 </ul>
-<h3 id="Potential-Areas-of-Improvement">Potential Areas of Improvement<a class="anchor-link" href="#Potential-Areas-of-Improvement">&#182;</a></h3><p>I can think of couple of improvement areas that I would like to explore.</p>
+<table>
+<thead><tr>
+<th style="text-align:center">Performance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="Images/roc-auc-01.png" alt="ROC-AUC"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">:------------------:</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><img src="Images/softmax-01.png" alt="Softmax Predictions"></p>
+<h3 id="3-4.-Visualize-the-Neural-Network's-State-with-Test-Images">3-4. Visualize the Neural Network's State with Test Images<a class="anchor-link" href="#3-4.-Visualize-the-Neural-Network's-State-with-Test-Images">&#182;</a></h3><table>
+<thead><tr>
+<th style="text-align:center">Visualization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="Images/layers-output-input-01.png" alt="Selected Input"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">:------------------:</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><img src="Images/layers-output-01.png" alt="Layer Output"></p>
+<h3 id="3-5.-Potential-Areas-of-Improvement">3-5. Potential Areas of Improvement<a class="anchor-link" href="#3-5.-Potential-Areas-of-Improvement">&#182;</a></h3><p>I can think of couple of improvement areas that I would like to explore.</p>
 <ul>
+<li><p><strong>Data Refinement</strong>:<br>
+By looking at the selected training data, one can refine the training data set by further pre-processing the raw data. The possible refinement areas are:</p>
+<ul>
+<li>Further focusing on the main feature by removing secondary objects present in the background.  </li>
+<li>Removing background images.  </li>
+</ul>
+</li>
 <li><p><strong>Utilizing more training data</strong>:<br>
 In general, by adding more clear and clean data of each category, the performance should be improved. Currently, the data augmentation is done by applying some level of noise. However, by adding more cear publicly-available data - that are clean and clear - one may improve the performance.</p>
 </li>
-<li><p>By examining the wrong predictions, it is observed that some of them are actually from the first 9 categories that are related to speed limit signs. Therefore, One way is to train a CNN model solely for the first 9 categories and the other one for all 43 categories - or just the other 34 categories. The final score will be decided after passing the test images into both CNNs. One benefit is that one may use smaller CNN size to get better speed and accuracy performance.</p>
+<li><p><strong>Utilizing Two Parallel Models</strong>:<br>
+By examining the wrong predictions, it is observed that some of them are actually from the first 9 categories that are related to speed limit signs. Therefore, One way is to train a CNN model solely for the first 9 categories and the other one for all 43 categories - or just the other 34 categories. The final score will be decided after passing the test images into both CNNs. One benefit is that one may use smaller CNN size to get better speed and accuracy performance.</p>
 </li>
 </ul>
 
@@ -13620,7 +13552,7 @@ In general, by adding more clear and clean data of each category, the performanc
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">reload</span>
@@ -13697,12 +13629,12 @@ In general, by adding more clear and clean data of each category, the performanc
 <span class="c1"># releasing memory </span>
 
 <span class="c1"># train_raw_data = None</span>
-<span class="n">valid_raw_data</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">test_raw_data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># valid_raw_data = None</span>
+<span class="c1"># test_raw_data = None</span>
 
 <span class="c1"># train_processed_data = None</span>
-<span class="n">valid_processed_data</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">test_processed_data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># valid_processed_data = None</span>
+<span class="c1"># test_processed_data = None</span>
 </pre></div>
 
     </div>
@@ -13877,7 +13809,7 @@ features count after data augmentation:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">training_processed_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -13907,7 +13839,7 @@ features count after data augmentation:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[48]:</div>
+    <div class="prompt output_prompt">Out[5]:</div>
 
 
 
@@ -13947,7 +13879,7 @@ features count after data augmentation:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_train_raw_data</span><span class="p">,</span> <span class="n">y_train_raw_data</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span> <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
@@ -14035,272 +13967,13 @@ Features counts after equal size selection:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">features_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># features_df.head(n=43)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[54]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>ClassId</th>
-      <th>SignName</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>Speed limit (20km/h)</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>Speed limit (30km/h)</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2</td>
-      <td>Speed limit (50km/h)</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>3</td>
-      <td>Speed limit (60km/h)</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>4</td>
-      <td>Speed limit (70km/h)</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>5</td>
-      <td>Speed limit (80km/h)</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>6</td>
-      <td>End of speed limit (80km/h)</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>7</td>
-      <td>Speed limit (100km/h)</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>8</td>
-      <td>Speed limit (120km/h)</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>9</td>
-      <td>No passing</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>10</td>
-      <td>No passing for vehicles over 3.5 metric tons</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>11</td>
-      <td>Right-of-way at the next intersection</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>12</td>
-      <td>Priority road</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>13</td>
-      <td>Yield</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>14</td>
-      <td>Stop</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>15</td>
-      <td>No vehicles</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>16</td>
-      <td>Vehicles over 3.5 metric tons prohibited</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>17</td>
-      <td>No entry</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>18</td>
-      <td>General caution</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>19</td>
-      <td>Dangerous curve to the left</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>20</td>
-      <td>Dangerous curve to the right</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>21</td>
-      <td>Double curve</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>22</td>
-      <td>Bumpy road</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>23</td>
-      <td>Slippery road</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>24</td>
-      <td>Road narrows on the right</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>25</td>
-      <td>Road work</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>26</td>
-      <td>Traffic signals</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>27</td>
-      <td>Pedestrians</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>28</td>
-      <td>Children crossing</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>29</td>
-      <td>Bicycles crossing</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>30</td>
-      <td>Beware of ice/snow</td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>31</td>
-      <td>Wild animals crossing</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>32</td>
-      <td>End of all speed and passing limits</td>
-    </tr>
-    <tr>
-      <th>33</th>
-      <td>33</td>
-      <td>Turn right ahead</td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>34</td>
-      <td>Turn left ahead</td>
-    </tr>
-    <tr>
-      <th>35</th>
-      <td>35</td>
-      <td>Ahead only</td>
-    </tr>
-    <tr>
-      <th>36</th>
-      <td>36</td>
-      <td>Go straight or right</td>
-    </tr>
-    <tr>
-      <th>37</th>
-      <td>37</td>
-      <td>Go straight or left</td>
-    </tr>
-    <tr>
-      <th>38</th>
-      <td>38</td>
-      <td>Keep right</td>
-    </tr>
-    <tr>
-      <th>39</th>
-      <td>39</td>
-      <td>Keep left</td>
-    </tr>
-    <tr>
-      <th>40</th>
-      <td>40</td>
-      <td>Roundabout mandatory</td>
-    </tr>
-    <tr>
-      <th>41</th>
-      <td>41</td>
-      <td>End of no passing</td>
-    </tr>
-    <tr>
-      <th>42</th>
-      <td>42</td>
-      <td>End of no passing by vehicles over 3.5 metric ...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15242,149 +14915,6 @@ Testing Accuracy: 0.952
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
 </div>
 </div>
 
