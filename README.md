@@ -15,7 +15,7 @@ In this project, I train a CNN model to classify traffic sign images using the [
 
 ## 2. Basic summary of the data set  
 
-- **Sample size of each category**  
+### 2-1. Sample size of each category  
 
 This traffic sign dbase consists of 43 caegories as listed below. The original data set size shows the size of each dataset for each category. As explained below, more fake data is generated and added to the original dataset for training purpose. The size of the augmented and pre=processd data is eually set to be 1440 across all categories, as shown below (a fair training data set). 
 
@@ -67,14 +67,18 @@ This traffic sign dbase consists of 43 caegories as listed below. The original d
 
 ![Sample Sizes Distribution](Images/sample-distribution-01.png)
 
-- **Sample images before and after processing (whitenning)**  
+### 2-2. Sample images before and after processing (whitenning)  
 
-    While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. Below you can see some examples of the images before and after whitening for each category.  
+    While exploring the raw data, I noticed several images that were dark, not really highlighting the features very well. To improve on it, I developed function `Cnn.whiten_images_self_mean` that takes an image as an input and slightly enlighten - or whiten - it with respect to its own average RGB component values. That can of course be performed on HLS space, increasing the light component; However, this approach worked well for now. In addition, there are also some general useful guidelines that I followed for data pre-processing, such as the guidelines suggested in the following link: [Image Pre-processing for Deep Learning](https://towardsdatascience.com/image-pre-processing-c1aec0be3edf).   
+
+Below you can see some examples of the images before and after whitening for each category.
 
 
-Raw Images          | ----- |  Processed (whitenned) Images 
+Raw Images          | --- |  Processed (whitenned) Images  
 :------------------:| :---: |:------------------:
 ![Sample Image](Images/selected-images-01.png) | ---  |  ![Sample Image](Images/selected-images-whitenned-01.png)  
+
+It should be noted that while processing the raw images, I define a rectangle of interest by introducing left, right, top, and bottom offsets, outside which I fill the image with zero padding. This helped get better whitenned images by removing some boundary background noises that are not part of the features to be captures. This also helps remove some of the secondary signs that may be present beside the main traffic sign. 
 
 ***
 > **Note**:
@@ -82,13 +86,11 @@ There are couple of other appraoches proposed in some literatures for image whit
 - [LINK-1: Preprocessing for deep learning: from covariance matrix to image whitening](https://hadrienj.github.io/posts/Preprocessing-for-deep-learning/)
 - [LINK-2: Preprocessing for deep learning: from covariance matrix to image whitening](https://www.freecodecamp.org/news/preprocessing-for-deep-learning-from-covariance-matrix-to-image-whitening-9e2b9c75165c/)  
 
-  In addition, there are also some general useful guidelines that I followed for data pre-processing, such as the guidelines suggested in the link below:  
-- [Image Pre-processing for Deep Learning](https://towardsdatascience.com/image-pre-processing-c1aec0be3edf) 
+### 2-3. Data Augmentation - generating fake training data  
 
-  
+**Why is 'data augmentation' required?**  
 
-- **Data Augmentation - generating fake training data:**  
-    Why is 'data augmentation' required? After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category (from column **'Original Dataset Size'** of  above table):  
+After examining the provided raw data, I observed that it may not provide enough data for some categories,; in other word, the training dataset does not provide fair number of samples for each category. For example, some features have significantly more data than ohers. Here is the distribution of number of images of each category (from column **'Original Dataset Size'** of  above table):  
     
     `features_counts: [ 180 1980 2010 1260 1770 1650  360 1290 1260 1320 1800 1170 1890 1920 690  540  360  990 1080  180  300  270  330 450  240 1350  540  210 480  240  390  690  210  599  360 1080  330  180 1860  270  300  210 210]`
     
@@ -103,22 +105,87 @@ There are couple of other appraoches proposed in some literatures for image whit
     However, the training data is loaded such that each category has equal sample size as follows (from column **'Augmented and Pre-Processed Dataset Size'** of  above table):  
     
     `features_counts: [1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440, 1440]`  
-    
-### Design and Test a Model Architecture  
 
-The model arcitecture consists of six CNN layers followed by two fully-connected - FC - layers. The number of parameters of the CNN layers model are tuned such that the feature depth increases as we move deeper and the output layer becomes smaller (see fig. below)
+
+## 3. Design and Test a Model Architecture  
+
+After trying to put a few layers, I decided to use six CNN layers followed by two fully-connected - FC - layers. In general, the overal architecture is very similar to that of LeNet as shown below: 
 
 ![LeNet](Images/lenet.png)
 
-For this project, feature depths of the CNN layers are 3 - for image inputs, 16, 32, 32, 64, 64, and 128). The output of each CNN layer is fed into a batch-normalizer to ensure that the results - trained weights and biases - do not overshoot, causing numerical instability and poor training performance.  
+For this project, the architecture contains the following features (3 channels for the zeroth layer, considering RGB channels of the image inputs):  
 
-For the FC layers, dropout appraoch is used to prevent overfitting. 
+  - **Conv. Layer-1**: 
+    - layet depth=16
+    - kernel size=(8, 8)
+    - output layer size: (?, 24, 24, 16)
+    - Batch normalization 
+    - ReLU
+    - Max pool 
 
-### Results and Discussions  
+  - **Conv. Layer-2**: 
+    - layet depth=32
+    - kernel size=(5, 5)
+    - output layer size: (?, 19, 19, 32)
+    - Batch normalization 
+    - ReLU
+    - Max pool 
 
-- **Before Data Augmentation**:  
-    After going through 100 iterations on the training data batches - `epochs = 100` - the validatoin accuracy of close to `89%` is achieved - using smaller network. Tracking the training-loss suggets that the model overfit the training data, as the test loss - using the training data - keep decreasing while validation accuracy almost saturates - see the training log below.  
-    
+  - **Conv. Layer-3**: 
+    - layet depth=32
+    - kernel size=(5, 5)
+    - output layer size: (?, 14, 14, 32)
+    - Batch normalization 
+    - ReLU
+    - Max pool 
+
+  - **Conv. Layer-4**: 
+    - layet depth=64
+    - kernel size=(5, 5)
+    - output layer size: (?, 9, 9, 32)
+    - Batch normalization 
+    - ReLU
+    - Max pool 
+
+  - **Conv. Layer-5**: 
+    - layet depth=64
+    - kernel size=(5, 5)
+    - output layer size: (?, 4, 4, 64)
+    - Batch normalization 
+    - ReLU
+    - Max pool 
+
+  - **Conv. Layer-6**: 
+    - layet depth=128
+    - kernel size=(2, 2)
+    - output layer size: (?, 2, 2, 128)
+    - Batch normalization 
+    - ReLU
+    - Max pool 
+
+  - **FC Layer-1**: 
+    - number of parameters=128
+
+  - **FC Layer-2**: 
+    - number of parameters=64
+
+### 3-1. Results and Discussions   
+
+For testing the model, using original data provided, I used a light model to study learning rate, the training loss and validation accuracy. I used a simple trick to reduce the number of parameters. The trick was to use a single fully-conneected layer to try different parramters. That helped me determine which parameters to be used for the final model architecture. 
+
+- **learning rate**: I initialy set `learning_rate = 1.0e-3` which is a good value to start with. Then I noticed that training loss fluctuates when the validation accuracy was still not satisfactory. Then I decided to lower it down, `learning_rate = 1.0e-4`. Adam optimizer would take care of gradually increasing and adapting the learning rate based on the performance of the system. 
+
+- **Optimizer**: I used both SGD and Adam optimizers for comparison. In terms of final results the differences are marginal; however, since Adam optimizer uses some internal measures to adapt the learning rate to the performance of the system, it would take less number of efforts to decrease test loss. Therefore, I finally used Adam after comparing the two results.  
+
+- **batch size**: I studied both `batch_size = 128` and `batch_size = 512` for the light system. Ideally the bigger batch size should perform beter as the gradients would be calculated and back-propagated using the error of the bigger training set data. However, I did not see substantial difference between the final results - very marginal. So I finally chose `batch_size = 512`.  
+
+- **number of iteration over all batches**: For the trial / light model I tried these variabilities: `epochs = 30`, `epochs = 50`, and `epochs = 100`. The system would get to the satisfactory result after 30 iterations more or less and then the validation accuracy starts to fluctuate  while the training loss would keep decreasing. That means overfitting, as the error is calculated and back-propagated by the training loss, instead of vallidation error. However, for the final CNN model architecture, I used `epochs = 50`, ensuring that the validation accuracy meets and also sperceeds the final project requiremnts.  
+
+- **dropout**: I first started with `keep_prob = 0.9` and then observed that the model did not generalize well and model learned the training data, i.e. the model overfit the training data. By choosing `keep_prob = 0.8`, I observed that I can still force the validation accuracy would improve at lower training loss, i.e. improving overall model performaance.  
+
+**Before Data Augmentation**  
+
+After going through 100 iterations on the training data batches - `epochs = 100` - the validatoin accuracy of close to `89%` is achieved - using smaller network. Tracking the training-loss suggets that the model overfit the training data, as the test loss - using the training data - keep decreasing while validation accuracy almost saturates - see the training log below.  
     
 `Training... start`  
 `Epoch 10: Test Cost: 0.1957 --- Valid Accuracy: 0.8329`  
@@ -133,15 +200,29 @@ For the FC layers, dropout appraoch is used to prevent overfitting.
 `Epoch 100: Test Cost: 0.0013 --- Valid Accuracy: 0.8871`  
 `Training... end`  
 
-- **After Data Augmentation**:  
+**After Data Augmentation**:  
     After going through 50 iterations on the training data batches - `epochs = 50` - the validatoin accuracy of close to `97%` is achieved. Tracking the training-loss suggets that the model performance is resonable and it did not overfit the training data. This is later confirmed by using the **test** data set that is not exposed to the model at all. The overall test accuracy is observed to be `95%`. 
 
-### Potential Areas of Improvement  
+### 3-2. Test a Model on New Images  
+
+As explained above, all the images I used for training, validation, and test purposes are already whitenned, based on the algorithm explained above. The overall summary of statistics of selected test images are listed below for all categories.  
+
+Raw Images          | --- |  Processed (whitenned) Images  
+:------------------:| :---: |:------------------:
+![Sample Image](Images/selected-test-images-01.png) | ---  |  ![Sample Image](Images/selected-test-images-whitenned-01.png)  
+
+### 3-3. Potential Areas of Improvement  
 
 I can think of couple of improvement areas that I would like to explore. 
 
--  **Utilizing more training data**:  
-   In general, by adding more clear and clean data of each category, the performance should be improved. Currently, the data augmentation is done by applying some level of noise. However, by adding more cear publicly-available data - that are clean and clear - one may improve the performance.  
+- **Data Refinement**:  
+  By looking at the selected training data, one can refine the training data set by further pre-processing the raw data. The possible refinement areas are:  
+  - Further focusing on the main feature by removing secondary objects present in the background.  
+  - Removing background images.  
    
--  By examining the wrong predictions, it is observed that some of them are actually from the first 9 categories that are related to speed limit signs. Therefore, One way is to train a CNN model solely for the first 9 categories and the other one for all 43 categories - or just the other 34 categories. The final score will be decided after passing the test images into both CNNs. One benefit is that one may use smaller CNN size to get better speed and accuracy performance.  
+- **Utilizing more training data**:  
+  In general, by adding more clear and clean data of each category, the performance should be improved. Currently, the data augmentation is done by applying some level of noise. However, by adding more cear publicly-available data - that are clean and clear - one may improve the performance.  
+   
+- **Utilizing Two Parallel Models**:  
+  By examining the wrong predictions, it is observed that some of them are actually from the first 9 categories that are related to speed limit signs. Therefore, One way is to train a CNN model solely for the first 9 categories and the other one for all 43 categories - or just the other 34 categories. The final score will be decided after passing the test images into both CNNs. One benefit is that one may use smaller CNN size to get better speed and accuracy performance.  
 
