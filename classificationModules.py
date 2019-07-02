@@ -758,7 +758,7 @@ class Cnn:
 
         fig, axes = plt.subplots(nrows=len(features), ncols=2)
         fig.set_figheight(15)
-        fig.set_figwidth(12)
+        fig.set_figwidth(18)
         fig.tight_layout()
         fig.suptitle("Top Softmax Predictions", fontsize=20, y=1.1)
 
@@ -786,13 +786,14 @@ class Cnn:
 
             axis[1].barh(ind + margin, pred_values[::-1][-n_classes:], width)
             axis[1].set_yticks(ind + margin)
-            axis[1].set_yticklabels(pred_label_names[-n_classes:][::-1])
+            axis[1].set_yticklabels(pred_label_names[:n_classes]) # [::-1])
             # axis[1].set_yticklabels(pred_label_name)
             axis[1].set_title("predicted: " + pred_label_name)
             axis[1].set_xticks([0, 0.5, 1.0])
 
             # print(pred_label_names[:max_label_count][::-1])
-        # return pred_values
+
+        # return pred_values, pred_label_names
 
     @staticmethod
     def evaluate_roc_curve(test_labels, predicted_y_probabilities):

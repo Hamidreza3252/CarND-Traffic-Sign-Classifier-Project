@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b0b9784-1672-4262-8eea-2bd9963fdcd3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Images/selected-images-01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Images/selected-images-whitenned-01.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data-Explore-01.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Data-Explore-01.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Traffic_Sign_Classifier.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Traffic_Sign_Classifier.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classificationModules.py" beforeDir="false" afterPath="$PROJECT_DIR$/classificationModules.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classificationModules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="235">
-              <caret line="21" column="24" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="24" />
+            <state relative-caret-position="213">
+              <caret line="760" column="27" selection-start-line="760" selection-start-column="27" selection-end-line="760" selection-end-column="27" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -67,7 +64,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="100" />
     <option name="y" value="20" />
     <option name="width" value="1400" />
@@ -124,7 +121,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11696523" />
@@ -151,8 +148,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/classificationModules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="235">
-          <caret line="21" column="24" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="24" />
+        <state relative-caret-position="213">
+          <caret line="760" column="27" selection-start-line="760" selection-start-column="27" selection-end-line="760" selection-end-column="27" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
