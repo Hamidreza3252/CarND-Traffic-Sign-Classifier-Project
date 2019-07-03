@@ -6,4 +6,4 @@ models
 *.p
 traffic-signs-data
 venv
-.idea
+.idea/*
